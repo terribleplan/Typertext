@@ -17,4 +17,6 @@ Todo
 Changelog
 ---------
 ####0.1.1
+Bower support
+####0.1.1
 Initial commit
