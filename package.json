@@ -1,5 +1,10 @@
 {
     "name": "Typertext",
+    "description": "A simple TypeScript HTTP request library",
+    "repository" : {
+        "type" : "git",
+        "url" : "https://github.com/terribleplan/Typertext.git"
+    },
     "version": "0.1.1",
     "devDependencies": {
         "grunt": "~0.4.2",
