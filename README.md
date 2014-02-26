@@ -16,6 +16,9 @@ Todo
 
 Changelog
 ---------
+####0.2.1
+- Renamed some functions
+- Pulled decoding of URL encoded objects into own function
 ####0.2.0
 - Interface to decode QueryStrings
 - Interface to create HttpUrl from string

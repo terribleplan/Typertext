@@ -19,16 +19,31 @@ module Typertext.Http {
         }
 
         public static DecodeQueryString(queryString:string):HttpQueryString {
-            var returnValue:HttpQueryString = {};
             if (queryString.length == 0 || queryString == "?") {
-                return returnValue;
+                return {};
             }
 
-            if (queryString.indexOf("?") == 0) {
-                queryString = queryString.substring(1);
+            return HttpUrl.UrlDecodeString(queryString);
+        }
+
+        public static EncodeQueryString(query:HttpQueryString) {
+            var rs = "?" + HttpUrl.UrlEncodeObject(query);
+            return ((rs.length == 1) ? "" : rs);
+        }
+
+        public static UrlEncodeObject(data:HttpQueryString):string {
+            var rs:string = "";
+            var temp:string;
+
+            for (temp in data) {
+                rs += +encodeURIComponent(temp) + "=" + encodeURIComponent(data[temp]) + "&";
             }
 
-            var params:string[] = HttpUrl.splitString(queryString, "&");
+            return rs.slice(0, -1);
+        }
+
+        public static UrlDecodeString(queryString:string):HttpQueryString {
+            var returnValue:HttpQueryString = {}, params:string[] = HttpUrl.splitString(queryString, "&");
             for (var i:number = 0; i < params.length; i++) {
                 var param = HttpUrl.splitString(params[i], "=", 2);
                 if (param.length == 1) {
@@ -42,24 +57,6 @@ module Typertext.Http {
             return returnValue;
         }
 
-        public static EncodeQueryString(query:HttpQueryString) {
-            var rs = "?" + HttpUrl.URLEncodeObject(query);
-            return ((rs.length == 1) ? "" : rs);
-        }
-
-        public static URLEncodeObject(data:{
-            [index:string]:string
-        }):string {
-            var rs:string = "";
-            var temp:string;
-
-            for (temp in data) {
-                rs += +encodeURIComponent(temp) + "=" + encodeURIComponent(data[temp]) + "&";
-            }
-
-            return rs.slice(0, -1);
-        }
-
         private static splitString(input:string, separator:string, limit:number = 0):string[] {
             limit++;
             var chunks:string[] = input.split(separator);
@@ -71,9 +68,7 @@ module Typertext.Http {
             return chunks;
         }
 
-        constructor(domain:string, protocol:HttpProtocol = HttpProtocol.http, path:string = "/", queryString:{
-            [index:string]:string
-        } = {}, port:number = 0) {
+        constructor(domain:string, protocol:HttpProtocol = HttpProtocol.http, path:string = "/", queryString:HttpQueryString = {}, port:number = 0) {
             if (port < 1 || port > 65535) {
                 port = HttpUrl.DefaultPort(protocol);
             }
