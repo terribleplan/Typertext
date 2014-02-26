@@ -231,16 +231,31 @@ var Typertext;
             };
 
             HttpUrl.DecodeQueryString = function (queryString) {
-                var returnValue = {};
                 if (queryString.length == 0 || queryString == "?") {
-                    return returnValue;
+                    return {};
                 }
 
-                if (queryString.indexOf("?") == 0) {
-                    queryString = queryString.substring(1);
+                return HttpUrl.UrlDecodeString(queryString);
+            };
+
+            HttpUrl.EncodeQueryString = function (query) {
+                var rs = "?" + HttpUrl.UrlEncodeObject(query);
+                return ((rs.length == 1) ? "" : rs);
+            };
+
+            HttpUrl.UrlEncodeObject = function (data) {
+                var rs = "";
+                var temp;
+
+                for (temp in data) {
+                    rs += +encodeURIComponent(temp) + "=" + encodeURIComponent(data[temp]) + "&";
                 }
 
-                var params = HttpUrl.splitString(queryString, "&");
+                return rs.slice(0, -1);
+            };
+
+            HttpUrl.UrlDecodeString = function (queryString) {
+                var returnValue = {}, params = HttpUrl.splitString(queryString, "&");
                 for (var i = 0; i < params.length; i++) {
                     var param = HttpUrl.splitString(params[i], "=", 2);
                     if (param.length == 1) {
@@ -252,22 +267,6 @@ var Typertext;
                 }
 
                 return returnValue;
-            };
-
-            HttpUrl.EncodeQueryString = function (query) {
-                var rs = "?" + HttpUrl.URLEncodeObject(query);
-                return ((rs.length == 1) ? "" : rs);
-            };
-
-            HttpUrl.URLEncodeObject = function (data) {
-                var rs = "";
-                var temp;
-
-                for (temp in data) {
-                    rs += +encodeURIComponent(temp) + "=" + encodeURIComponent(data[temp]) + "&";
-                }
-
-                return rs.slice(0, -1);
             };
 
             HttpUrl.splitString = function (input, separator, limit) {

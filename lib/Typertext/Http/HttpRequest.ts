@@ -64,7 +64,7 @@ module Typertext.Http {
             }
 
             xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            xhr.send(HttpUrl.URLEncodeObject(postData));
+            xhr.send(HttpUrl.UrlEncodeObject(postData));
         }
     }
 }
