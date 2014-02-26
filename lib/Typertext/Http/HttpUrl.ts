@@ -12,9 +12,37 @@ module Typertext.Http {
             return ((protocol == HttpProtocol.http) ? 80 : 443)
         }
 
-        public static EncodeQueryString(query:{
-            [index:string]:string
-        }) {
+        public static FromUrl(location:string):HttpUrl {
+            var l = document.createElement("a");
+            l.href = location;
+            return new HttpUrl(l.hostname, HttpProtocol[l.protocol], l.pathname, HttpUrl.DecodeQueryString(l.search))
+        }
+
+        public static DecodeQueryString(queryString:string):HttpQueryString {
+            var returnValue = {};
+            if (queryString.length == 0 || queryString == "?") {
+                return returnValue;
+            }
+
+            if (queryString.indexOf("?") == 0) {
+                queryString = queryString.substring(1);
+            }
+
+            var params:string[] = HttpUrl.splitString(queryString, "&");
+            for (var i:number = 0; i < params.length; i++) {
+                var param = HttpUrl.splitString(params[i], "=", 2);
+                if (param.length == 1) {
+                    returnValue[param[0]] = "";
+                    continue;
+                }
+
+                returnValue[param[0]] = param[1];
+            }
+
+            return returnValue;
+        }
+
+        public static EncodeQueryString(query:HttpQueryString) {
             var rs = "?" + HttpUrl.URLEncodeObject(query);
             return ((rs.length == 1) ? "" : rs);
         }
@@ -30,6 +58,17 @@ module Typertext.Http {
             }
 
             return rs.slice(0, -1);
+        }
+
+        private static splitString(input:string, separator:string, limit:number = 0):string[] {
+            limit++;
+            var chunks:string[] = input.split(separator);
+            if (limit > 0 && chunks.length > limit) {
+                var ret = chunks.splice(0, limit);
+                ret.push(chunks.join(separator));
+                return ret;
+            }
+            return chunks;
         }
 
         constructor(domain:string, protocol:HttpProtocol = HttpProtocol.http, path:string = "/", queryString:{
