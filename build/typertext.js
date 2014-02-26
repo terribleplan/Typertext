@@ -224,6 +224,36 @@ var Typertext;
                 return ((protocol == 0 /* http */) ? 80 : 443);
             };
 
+            HttpUrl.FromUrl = function (location) {
+                var l = document.createElement("a");
+                l.href = location;
+                return new HttpUrl(l.hostname, Typertext.Http.HttpProtocol[l.protocol], l.pathname, HttpUrl.DecodeQueryString(l.search));
+            };
+
+            HttpUrl.DecodeQueryString = function (queryString) {
+                var returnValue = {};
+                if (queryString.length == 0 || queryString == "?") {
+                    return returnValue;
+                }
+
+                if (queryString.indexOf("?") == 0) {
+                    queryString = queryString.substring(1);
+                }
+
+                var params = HttpUrl.splitString(queryString, "&");
+                for (var i = 0; i < params.length; i++) {
+                    var param = HttpUrl.splitString(params[i], "=", 2);
+                    if (param.length == 1) {
+                        returnValue[param[0]] = "";
+                        continue;
+                    }
+
+                    returnValue[param[0]] = param[1];
+                }
+
+                return returnValue;
+            };
+
             HttpUrl.EncodeQueryString = function (query) {
                 var rs = "?" + HttpUrl.URLEncodeObject(query);
                 return ((rs.length == 1) ? "" : rs);
@@ -238,6 +268,18 @@ var Typertext;
                 }
 
                 return rs.slice(0, -1);
+            };
+
+            HttpUrl.splitString = function (input, separator, limit) {
+                if (typeof limit === "undefined") { limit = 0; }
+                limit++;
+                var chunks = input.split(separator);
+                if (limit > 0 && chunks.length > limit) {
+                    var ret = chunks.splice(0, limit);
+                    ret.push(chunks.join(separator));
+                    return ret;
+                }
+                return chunks;
             };
 
             HttpUrl.prototype.ToString = function () {

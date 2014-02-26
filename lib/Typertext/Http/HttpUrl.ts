@@ -19,7 +19,7 @@ module Typertext.Http {
         }
 
         public static DecodeQueryString(queryString:string):HttpQueryString {
-            var returnValue = {};
+            var returnValue:HttpQueryString = {};
             if (queryString.length == 0 || queryString == "?") {
                 return returnValue;
             }

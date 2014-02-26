@@ -63,6 +63,11 @@ declare module Typertext.Http {
     }
 }
 declare module Typertext.Http {
+    interface HttpQueryString {
+        [index: string]: string;
+    }
+}
+declare module Typertext.Http {
     class HttpRequest implements GenericRequest<HttpResponseHandler> {
         private static parseHeaderString(headerStr);
         constructor();
@@ -98,12 +103,13 @@ declare module Typertext.Http {
         private _Protocol;
         private _QueryString;
         static DefaultPort(protocol: HttpProtocol): number;
-        static EncodeQueryString(query: {
-            [index: string]: string;
-        }): string;
+        static FromUrl(location: string): HttpUrl;
+        static DecodeQueryString(queryString: string): HttpQueryString;
+        static EncodeQueryString(query: HttpQueryString): string;
         static URLEncodeObject(data: {
             [index: string]: string;
         }): string;
+        private static splitString(input, separator, limit?);
         constructor(domain: string, protocol?: HttpProtocol, path?: string, queryString?: {
             [index: string]: string;
         }, port?: number);
