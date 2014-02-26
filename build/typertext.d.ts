@@ -106,13 +106,10 @@ declare module Typertext.Http {
         static FromUrl(location: string): HttpUrl;
         static DecodeQueryString(queryString: string): HttpQueryString;
         static EncodeQueryString(query: HttpQueryString): string;
-        static URLEncodeObject(data: {
-            [index: string]: string;
-        }): string;
+        static UrlEncodeObject(data: HttpQueryString): string;
+        static UrlDecodeString(queryString: string): HttpQueryString;
         private static splitString(input, separator, limit?);
-        constructor(domain: string, protocol?: HttpProtocol, path?: string, queryString?: {
-            [index: string]: string;
-        }, port?: number);
+        constructor(domain: string, protocol?: HttpProtocol, path?: string, queryString?: HttpQueryString, port?: number);
         public ToString(): string;
     }
 }

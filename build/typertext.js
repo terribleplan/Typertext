@@ -160,7 +160,7 @@ var Typertext;
                 }
 
                 xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                xhr.send(Typertext.Http.HttpUrl.URLEncodeObject(postData));
+                xhr.send(Typertext.Http.HttpUrl.UrlEncodeObject(postData));
             };
             return HttpRequest;
         })();
