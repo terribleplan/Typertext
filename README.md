@@ -11,8 +11,8 @@ Usage
 Todo
 ----
 - More robust error handling
-- Bower integration
 - Documentation
+- Testing
 
 Changelog
 ---------

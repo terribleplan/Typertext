@@ -1,0 +1,24 @@
+{
+  "name": "Typertext",
+  "version": "0.1.2",
+  "homepage": "https://github.com/terribleplan/Typertext",
+  "authors": [
+    "Kegan Myers <kegan@keganmyers.com>"
+  ],
+  "description": "A simple TypeScript HTTP request library",
+  "main": "build/typertext.js",
+  "keywords": [
+    "http",
+    "request",
+    "typescript",
+    "json"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
