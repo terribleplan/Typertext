@@ -1,5 +1,3 @@
-//TODO comment everything
-
 /**
  * @module      Typertext
  * @submodule   Http
