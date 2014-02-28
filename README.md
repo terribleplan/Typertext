@@ -41,7 +41,7 @@ Changelog
 - Interface to create HttpUrl from string
 
 ####0.1.2
-Bower support
+- Bower support
 
 ####0.1.1
-Initial commit
+- Initial commit
