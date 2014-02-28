@@ -245,7 +245,7 @@ var Typertext;
                 var temp;
 
                 for (temp in data) {
-                    rs += +encodeURIComponent(temp) + "=" + encodeURIComponent(data[temp]) + "&";
+                    rs += encodeURIComponent(temp) + "=" + encodeURIComponent(data[temp]) + "&";
                 }
 
                 return rs.slice(0, -1);
