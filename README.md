@@ -31,13 +31,17 @@ Changelog
 ####0.3.0
 - Removed SetData from GenericResponse
 - Added documentation
+
 ####0.2.1
 - Renamed some functions
 - Pulled decoding of URL encoded objects into own function
+
 ####0.2.0
 - Interface to decode QueryStrings
 - Interface to create HttpUrl from string
+
 ####0.1.2
 Bower support
+
 ####0.1.1
 Initial commit
