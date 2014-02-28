@@ -69,7 +69,7 @@ module Typertext.Http {
             var temp:string;
 
             for (temp in data) {
-                rs += +encodeURIComponent(temp) + "=" + encodeURIComponent(data[temp]) + "&";
+                rs += encodeURIComponent(temp) + "=" + encodeURIComponent(data[temp]) + "&";
             }
 
             return rs.slice(0, -1);
@@ -127,7 +127,7 @@ module Typertext.Http {
          *
          * @class HttpUrl
          * @author      Kegan Myers <kegan@keganmyers.com>
-         * @version     0.3.0
+         * @version     0.3.1
          * @constructor
          */
         constructor(domain:string, protocol:HttpProtocol = HttpProtocol.http, path:string = "/", queryString:HttpQueryString = {}, port:number = 0) {
