@@ -11,7 +11,6 @@ Usage
 Todo
 ----
 - More robust error handling
-- Documentation
 - Testing
 - IE 8-9 CORS support (XDomain)
 
