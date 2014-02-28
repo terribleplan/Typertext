@@ -28,7 +28,6 @@ declare module Typertext {
         public GetHeaders(): Http.HttpHeaderData;
         public GetHttpStatus(): number;
         public GetStatus(): Http.HttpResponseStatus;
-        public SetContent(content: T): void;
     }
 }
 declare module Typertext {
@@ -97,11 +96,11 @@ declare module Typertext.Http {
 }
 declare module Typertext.Http {
     class HttpUrl {
-        private _Domain;
-        private _Path;
-        private _Port;
-        private _Protocol;
-        private _QueryString;
+        private domain;
+        private path;
+        private port;
+        private protocol;
+        private queryString;
         static DefaultPort(protocol: HttpProtocol): number;
         static FromUrl(location: string): HttpUrl;
         static DecodeQueryString(queryString: string): HttpQueryString;

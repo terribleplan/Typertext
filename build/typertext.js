@@ -23,6 +23,7 @@ var Typertext;
 })(Typertext || (Typertext = {}));
 var Typertext;
 (function (Typertext) {
+    
 })(Typertext || (Typertext = {}));
 var Typertext;
 (function (Typertext) {
@@ -51,10 +52,6 @@ var Typertext;
 
         GenericResponse.prototype.GetStatus = function () {
             return this.status;
-        };
-
-        GenericResponse.prototype.SetContent = function (content) {
-            this.content = content;
         };
         return GenericResponse;
     })();
@@ -214,11 +211,11 @@ var Typertext;
                     path = "/" + path;
                 }
 
-                this._Domain = domain;
-                this._Protocol = protocol;
-                this._Path = path;
-                this._QueryString = queryString;
-                this._Port = port;
+                this.domain = domain;
+                this.protocol = protocol;
+                this.path = path;
+                this.queryString = queryString;
+                this.port = port;
             }
             HttpUrl.DefaultPort = function (protocol) {
                 return ((protocol == 0 /* http */) ? 80 : 443);
@@ -282,7 +279,7 @@ var Typertext;
             };
 
             HttpUrl.prototype.ToString = function () {
-                return Typertext.Http.HttpProtocol[this._Protocol] + "://" + this._Domain + ((this._Port == HttpUrl.DefaultPort(this._Protocol)) ? "" : ":" + this._Port) + this._Path + HttpUrl.EncodeQueryString(this._QueryString);
+                return Typertext.Http.HttpProtocol[this.protocol] + "://" + this.domain + ((this.port == HttpUrl.DefaultPort(this.protocol)) ? "" : ":" + this.port) + this.path + HttpUrl.EncodeQueryString(this.queryString);
             };
             return HttpUrl;
         })();
