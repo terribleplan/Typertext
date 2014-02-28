@@ -13,6 +13,7 @@ Todo
 - More robust error handling
 - Testing
 - IE 8-9 CORS support (XDomain)
+- CI
 
 Notes
 -----
