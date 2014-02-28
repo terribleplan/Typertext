@@ -17,7 +17,7 @@ module Typertext {
      * @uses        Typertext.Http.HttpUrl
      *
      * @author      Kegan Myers <kegan@keganmyers.com>
-     * @version     0.2.1
+     * @version     0.3.0
      */
     export interface GenericRequest<T extends GenericResponseHandler<GenericResponse<any>>> {
 
