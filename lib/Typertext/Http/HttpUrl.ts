@@ -13,14 +13,9 @@ module Typertext.Http {
         };
 
         /**
-         * A common interface for building a URL into something that can easily be decomposed for a client
          *
          * @param protocol
          * @returns {number}
-         *
-         * @author      Kegan Myers <kegan@keganmyers.com>
-         * @version     0.3.0
-         * @constructor
          */
         public static DefaultPort(protocol:HttpProtocol) {
             return ((protocol == HttpProtocol.http) ? 80 : 443)
@@ -122,6 +117,7 @@ module Typertext.Http {
         }
 
         /**
+         * A common interface for building a URL into something that can easily be decomposed for a client
          *
          * @param {string}          domain
          * @param {HttpProtocol}    protocol
@@ -129,6 +125,7 @@ module Typertext.Http {
          * @param {HttpQueryString} queryString
          * @param {number}          port
          *
+         * @class HttpUrl
          * @author      Kegan Myers <kegan@keganmyers.com>
          * @version     0.3.0
          * @constructor

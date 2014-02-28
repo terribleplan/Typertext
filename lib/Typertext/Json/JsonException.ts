@@ -10,6 +10,7 @@ module Typertext.Json {
          * @param {string}  message
          * @param {number}  code
          *
+         * @class JsonException
          * @author      Kegan Myers <kegan@keganmyers.com>
          * @version     0.3.0
          * @constructor
