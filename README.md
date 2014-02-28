@@ -13,6 +13,19 @@ Todo
 - More robust error handling
 - Documentation
 - Testing
+- IE 8-9 CORS support (XDomain)
+
+Notes
+-----
+####The following are not considered features, and will not be implemented by this project:
+- JSONp
+
+####The following are currently under consideration
+- XHR2 feature support
+
+License
+-------
+This project is licensed under the MIT license, the text of which can be read in the [license.txt] file.
 
 Changelog
 ---------
