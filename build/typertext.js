@@ -28,9 +28,9 @@ var Typertext;
 var Typertext;
 (function (Typertext) {
     var GenericResponse = (function () {
-        function GenericResponse(status, responseHeaders, httpResponseCode, responseBody) {
+        function GenericResponse(status, responseHeaderGetter, httpResponseCode, responseBody) {
             this.status = status;
-            this.headers = responseHeaders;
+            this.headers = responseHeaderGetter;
             this.httpStatus = httpResponseCode;
             this.content = responseBody;
         }
@@ -39,11 +39,11 @@ var Typertext;
         };
 
         GenericResponse.prototype.GetContentType = function () {
-            return this.GetHeaders()["Content-Type"];
+            return this.GetHeader("Content-Type");
         };
 
-        GenericResponse.prototype.GetHeaders = function () {
-            return this.headers;
+        GenericResponse.prototype.GetHeader = function (name) {
+            return this.headers(name);
         };
 
         GenericResponse.prototype.GetHttpStatus = function () {
@@ -105,18 +105,6 @@ var Typertext;
         var HttpRequest = (function () {
             function HttpRequest() {
             }
-            HttpRequest.parseHeaderString = function (headerStr) {
-                var headers = {}, headerPairs = headerStr.split('\u000d\u000a');
-                for (var i = 0; i < headerPairs.length; i++) {
-                    var headerPair = headerPairs[i], index = headerPair.indexOf('\u003a\u0020');
-                    if (index > 0) {
-                        var key = headerPair.substring(0, index);
-                        headers[key] = headerPair.substring(index + 2);
-                    }
-                }
-                return headers;
-            };
-
             HttpRequest.prototype.Get = function (request, callback) {
                 this.RawRequest(0 /* GET */, request, {}, callback);
             };
@@ -132,9 +120,11 @@ var Typertext;
                 var xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState == 4) {
-                        var headers = HttpRequest.parseHeaderString(xhr.getAllResponseHeaders());
+                        var getHeader = function (name) {
+                            return xhr.getResponseHeader(name);
+                        };
                         if (xhr.status == 200) {
-                            callback(new Typertext.Http.HttpResponse(0 /* success */, headers, xhr.status, xhr.responseText));
+                            callback(new Typertext.Http.HttpResponse(0 /* success */, getHeader, xhr.status, xhr.responseText));
                         } else if (xhr.status >= 400 && xhr.status < 500) {
                             throw new Typertext.Http.HttpException("Error type is unimplemented", -1, 2 /* clientError */);
                         } else if (xhr.status >= 500 && xhr.status < 600) {
@@ -170,8 +160,8 @@ var Typertext;
     (function (Http) {
         var HttpResponse = (function (_super) {
             __extends(HttpResponse, _super);
-            function HttpResponse(status, responseHeaders, httpResponseCode, responseBody) {
-                _super.call(this, status, responseHeaders, httpResponseCode, responseBody);
+            function HttpResponse(status, responseHeaderGetter, httpResponseCode, responseBody) {
+                _super.call(this, status, responseHeaderGetter, httpResponseCode, responseBody);
             }
             return HttpResponse;
         })(Typertext.GenericResponse);
@@ -203,7 +193,7 @@ var Typertext;
                 if (typeof path === "undefined") { path = "/"; }
                 if (typeof queryString === "undefined") { queryString = {}; }
                 if (typeof port === "undefined") { port = 0; }
-                if (port < 1 || port > 65535) {
+                if (port < 1 || port > 65535 || isNaN(port)) {
                     port = HttpUrl.DefaultPort(protocol);
                 }
 
@@ -218,18 +208,25 @@ var Typertext;
                 this.port = port;
             }
             HttpUrl.DefaultPort = function (protocol) {
-                return ((protocol == 0 /* http */) ? 80 : 443);
+                switch (protocol) {
+                    case 0 /* http */:
+                        return 80;
+                    case 1 /* https */:
+                        return 443;
+                    default:
+                        return -1;
+                }
             };
 
             HttpUrl.FromUrl = function (location) {
                 var l = document.createElement("a");
                 l.href = location;
-                return new HttpUrl(l.hostname, Typertext.Http.HttpProtocol[l.protocol], l.pathname, HttpUrl.DecodeQueryString(l.search));
+                return new HttpUrl(l.hostname, Typertext.Http.HttpProtocol[l.protocol.slice(0, -1)], l.pathname, HttpUrl.DecodeQueryString(l.search), parseInt(l.port));
             };
 
             HttpUrl.DecodeQueryString = function (queryString) {
-                if (queryString.length == 0 || queryString == "?") {
-                    return {};
+                if (queryString.indexOf("?") == 0) {
+                    queryString = queryString.substring(1);
                 }
 
                 return HttpUrl.UrlDecodeString(queryString);
@@ -254,20 +251,25 @@ var Typertext;
             HttpUrl.UrlDecodeString = function (queryString) {
                 var returnValue = {}, params = HttpUrl.splitString(queryString, "&");
                 for (var i = 0; i < params.length; i++) {
-                    var param = HttpUrl.splitString(params[i], "=", 2);
-                    if (param.length == 1) {
-                        returnValue[param[0]] = "";
+                    if (params[i] == "") {
                         continue;
                     }
 
-                    returnValue[param[0]] = param[1];
+                    var param = HttpUrl.splitString(params[i], "=", 2);
+                    var key = decodeURIComponent(param[0]);
+                    if (param.length == 1) {
+                        returnValue[key] = "";
+                        continue;
+                    }
+
+                    returnValue[key] = decodeURIComponent(param[1]);
                 }
 
                 return returnValue;
             };
 
             HttpUrl.splitString = function (input, separator, limit) {
-                if (typeof limit === "undefined") { limit = 0; }
+                if (typeof limit === "undefined") { limit = -1; }
                 limit++;
                 var chunks = input.split(separator);
                 if (limit > 0 && chunks.length > limit) {
@@ -352,11 +354,11 @@ var Typertext;
     (function (Json) {
         var JsonResponse = (function (_super) {
             __extends(JsonResponse, _super);
-            function JsonResponse(status, responseHeaders, httpResponseCode, responseBody) {
-                _super.call(this, status, responseHeaders, httpResponseCode, responseBody);
+            function JsonResponse(status, responseHeaderGetter, httpResponseCode, responseBody) {
+                _super.call(this, status, responseHeaderGetter, httpResponseCode, responseBody);
             }
             JsonResponse.fromHttpResponse = function (httpResponse) {
-                return new JsonResponse(httpResponse.GetStatus(), httpResponse.GetHeaders(), httpResponse.GetHttpStatus(), window["JSON"].parse(httpResponse.GetContent()));
+                return new JsonResponse(httpResponse.GetStatus(), httpResponse.GetHeader, httpResponse.GetHttpStatus(), window["JSON"].parse(httpResponse.GetContent()));
             };
             return JsonResponse;
         })(Typertext.GenericResponse);
