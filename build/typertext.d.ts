@@ -22,10 +22,10 @@ declare module Typertext {
         private headers;
         private httpStatus;
         private content;
-        constructor(status: Http.HttpResponseStatus, responseHeaders?: Http.HttpHeaderData, httpResponseCode?: number, responseBody?: T);
+        constructor(status: Http.HttpResponseStatus, responseHeaderGetter?: (input: string) => string, httpResponseCode?: number, responseBody?: T);
         public GetContent(): T;
         public GetContentType(): string;
-        public GetHeaders(): Http.HttpHeaderData;
+        public GetHeader(name: string): string;
         public GetHttpStatus(): number;
         public GetStatus(): Http.HttpResponseStatus;
     }
@@ -37,11 +37,6 @@ declare module Typertext {
 }
 declare module Typertext.Http {
     class HttpException extends BaseException<HttpResponseStatus> {
-    }
-}
-declare module Typertext.Http {
-    interface HttpHeaderData {
-        [index: string]: string;
     }
 }
 declare module Typertext.Http {
@@ -68,7 +63,6 @@ declare module Typertext.Http {
 }
 declare module Typertext.Http {
     class HttpRequest implements GenericRequest<HttpResponseHandler> {
-        private static parseHeaderString(headerStr);
         constructor();
         public Get(request: HttpUrl, callback: HttpResponseHandler): void;
         public Post(request: HttpUrl, postData: HttpPostData, callback: HttpResponseHandler): void;
@@ -77,7 +71,7 @@ declare module Typertext.Http {
 }
 declare module Typertext.Http {
     class HttpResponse extends GenericResponse<string> {
-        constructor(status: HttpResponseStatus, responseHeaders?: HttpHeaderData, httpResponseCode?: number, responseBody?: string);
+        constructor(status: HttpResponseStatus, responseHeaderGetter?: (input: string) => string, httpResponseCode?: number, responseBody?: string);
     }
 }
 declare module Typertext.Http {
@@ -135,7 +129,7 @@ declare module Typertext.Json {
 declare module Typertext.Json {
     class JsonResponse extends GenericResponse<JsonObject> {
         static fromHttpResponse(httpResponse: Http.HttpResponse): JsonResponse;
-        constructor(status: Http.HttpResponseStatus, responseHeaders?: Http.HttpHeaderData, httpResponseCode?: number, responseBody?: JsonObject);
+        constructor(status: Http.HttpResponseStatus, responseHeaderGetter?: (input: string) => string, httpResponseCode?: number, responseBody?: JsonObject);
     }
 }
 declare module Typertext.Json {

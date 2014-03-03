@@ -8,9 +8,7 @@ module Typertext.Http {
         private path:string;
         private port:number;
         private protocol:HttpProtocol;
-        private queryString:{
-            [index:string]:string
-        };
+        private queryString:HttpQueryString;
 
         /**
          *
@@ -18,7 +16,14 @@ module Typertext.Http {
          * @returns {number}
          */
         public static DefaultPort(protocol:HttpProtocol) {
-            return ((protocol == HttpProtocol.http) ? 80 : 443)
+            switch(protocol) {
+                case HttpProtocol.http:
+                    return 80;
+                case HttpProtocol.https:
+                    return 443;
+                default:
+                    return -1;
+            }
         }
 
         /**
@@ -30,7 +35,7 @@ module Typertext.Http {
         public static FromUrl(location:string):HttpUrl {
             var l = document.createElement("a");
             l.href = location;
-            return new HttpUrl(l.hostname, HttpProtocol[l.protocol], l.pathname, HttpUrl.DecodeQueryString(l.search))
+            return new HttpUrl(l.hostname, HttpProtocol[l.protocol.slice(0,-1)], l.pathname, HttpUrl.DecodeQueryString(l.search), parseInt(l.port))
         }
 
         /**
@@ -40,8 +45,8 @@ module Typertext.Http {
          * @returns {HttpQueryString}
          */
         public static DecodeQueryString(queryString:string):HttpQueryString {
-            if (queryString.length == 0 || queryString == "?") {
-                return {};
+            if (queryString.indexOf("?") == 0) {
+                queryString = queryString.substring(1);
             }
 
             return HttpUrl.UrlDecodeString(queryString);
@@ -84,13 +89,18 @@ module Typertext.Http {
         public static UrlDecodeString(queryString:string):HttpQueryString {
             var returnValue:HttpQueryString = {}, params:string[] = HttpUrl.splitString(queryString, "&");
             for (var i:number = 0; i < params.length; i++) {
-                var param = HttpUrl.splitString(params[i], "=", 2);
-                if (param.length == 1) {
-                    returnValue[param[0]] = "";
+                if (params[i] == "") {
                     continue;
                 }
 
-                returnValue[param[0]] = param[1];
+                var param = HttpUrl.splitString(params[i], "=", 2);
+                var key = decodeURIComponent(param[0]);
+                if (param.length == 1) {
+                    returnValue[key] = "";
+                    continue;
+                }
+
+                returnValue[key] = decodeURIComponent(param[1]);
             }
 
             return returnValue;
@@ -105,7 +115,7 @@ module Typertext.Http {
          * @param {number}  limit
          * @returns {string[]}
          */
-        private static splitString(input:string, separator:string, limit:number = 0):string[] {
+        private static splitString(input:string, separator:string, limit:number = -1):string[] {
             limit++;
             var chunks:string[] = input.split(separator);
             if (limit > 0 && chunks.length > limit) {

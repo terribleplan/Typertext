@@ -8,26 +8,6 @@
 module Typertext.Http {
     export class HttpRequest implements Typertext.GenericRequest<HttpResponseHandler> {
         /**
-         * A helper method that takes headers sent by the server and parses it out to an object
-         *
-         * @param   {string}    headerStr
-         * @returns {HttpHeaderData}
-         */
-        private static parseHeaderString(headerStr:string):HttpHeaderData {
-            var headers:HttpHeaderData = {},
-                headerPairs:string[] = headerStr.split('\u000d\u000a');
-            for (var i:number = 0; i < headerPairs.length; i++) {
-                var headerPair:string = headerPairs[i],
-                    index:number = headerPair.indexOf('\u003a\u0020');
-                if (index > 0) {
-                    var key:string = headerPair.substring(0, index);
-                    headers[key] = headerPair.substring(index + 2);
-                }
-            }
-            return headers;
-        }
-
-        /**
          * The class that everything that calls an http(s) server should use and build on top of using callbacks
          *
          * @class   HttpRequest
@@ -76,9 +56,11 @@ module Typertext.Http {
             xhr.onreadystatechange = ()=> {
                 //Once the request completes
                 if (xhr.readyState == 4) {
-                    var headers:HttpHeaderData = HttpRequest.parseHeaderString(xhr.getAllResponseHeaders());
+                    var getHeader = (name:string):string => {
+                        return xhr.getResponseHeader(name);
+                    };
                     if (xhr.status == 200) {
-                        callback(new HttpResponse(HttpResponseStatus.success, headers, xhr.status, xhr.responseText));
+                        callback(new HttpResponse(HttpResponseStatus.success, getHeader, xhr.status, xhr.responseText));
 
                     } else if (xhr.status >= 400 && xhr.status < 500) {
                         //TODO generate a client error callback

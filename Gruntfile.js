@@ -1,7 +1,15 @@
 module.exports = function (grunt) {
+    grunt.loadNpmTasks('grunt-karma');
     grunt.loadNpmTasks('grunt-typescript');
 
     grunt.initConfig({
+        karma: {
+            unit: {
+                configFile: "karma.conf.js",
+                singleRun: true,
+                browsers: ['PhantomJS']
+            }
+        },
         typescript: {
             base: {
                 src: ["lib/**/*.ts"],
@@ -15,4 +23,6 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('default', ['typescript']);
+
+    grunt.registerTask('test', ['typescript', 'karma:unit'])
 };

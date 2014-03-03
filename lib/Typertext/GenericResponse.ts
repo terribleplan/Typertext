@@ -4,12 +4,11 @@
  * @submodule   Json
  */
 module Typertext {
-    import HttpHeaderData = Typertext.Http.HttpHeaderData;
     import HttpResponseStatus = Typertext.Http.HttpResponseStatus;
 
     export class GenericResponse<T> {
         private status:HttpResponseStatus;
-        private headers:HttpHeaderData;
+        private headers:(input:string)=>string;
         private httpStatus:number;
         private content:T;
 
@@ -21,7 +20,7 @@ module Typertext {
          * @uses        Typertext.Http.HttpResponseStatus
          *
          * @param       {HttpResponseStatus}    status
-         * @param       {HttpHeaderData}        responseHeaders
+         * @param       {Function}        responseHeaderGetter
          * @param       {number}                httpResponseCode
          * @param       {T}                     responseBody
          * @constructor
@@ -29,9 +28,9 @@ module Typertext {
          * @author      Kegan Myers <kegan@keganmyers.com>
          * @version     0.3.0
          */
-        constructor(status:HttpResponseStatus, responseHeaders?:HttpHeaderData, httpResponseCode?:number, responseBody?:T) {
+        constructor(status:HttpResponseStatus, responseHeaderGetter?:(input:string)=>string, httpResponseCode?:number, responseBody?:T) {
             this.status = status;
-            this.headers = responseHeaders;
+            this.headers = responseHeaderGetter;
             this.httpStatus = httpResponseCode;
             this.content = responseBody;
         }
@@ -52,17 +51,17 @@ module Typertext {
          * @constructor
          */
         public GetContentType():string {
-            return this.GetHeaders()["Content-Type"];
+            return this.GetHeader("Content-Type");
         }
 
         /**
          * Accessor method
          *
-         * @returns {HttpHeaderData}
+         * @returns {string}
          * @constructor
          */
-        public GetHeaders():HttpHeaderData {
-            return this.headers;
+        public GetHeader(name:string):string {
+            return this.headers(name);
         }
 
         /**

@@ -11,7 +11,7 @@ module Typertext.Http {
          * @extends GenericResponse
          *
          * @param   {HttpResponseStatus}    status
-         * @param   {HttpHeaderData}        responseHeaders
+         * @param   {Function}        responseHeaderGetter
          * @param   {number}                httpResponseCode
          * @param   {string}                responseBody
          *
@@ -19,8 +19,8 @@ module Typertext.Http {
          * @version     0.3.0
          * @constructor
          */
-        constructor(status:HttpResponseStatus, responseHeaders?:HttpHeaderData, httpResponseCode?:number, responseBody?:string) {
-            super(status, responseHeaders, httpResponseCode, responseBody);
+            constructor(status:HttpResponseStatus, responseHeaderGetter?:(input:string)=>string, httpResponseCode?:number, responseBody?:string) {
+            super(status, responseHeaderGetter, httpResponseCode, responseBody);
         }
     }
 }
