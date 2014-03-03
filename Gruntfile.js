@@ -4,10 +4,15 @@ module.exports = function (grunt) {
 
     grunt.initConfig({
         karma: {
-            unit: {
+            phantom: {
                 configFile: "karma.conf.js",
                 singleRun: true,
-                browsers: ["PhantomJS", "Chrome"]
+                browsers: ["PhantomJS"]
+            },
+            chrome: {
+                configFile: "karma.conf.js",
+                singleRun: true,
+                browsers: ["Chrome"]
             },
             watch: {
                 configFile: "karma.conf.js",
@@ -28,5 +33,6 @@ module.exports = function (grunt) {
 
     grunt.registerTask('default', ['typescript']);
 
-    grunt.registerTask('test', ['typescript', 'karma:unit'])
+    grunt.registerTask('test', ['typescript', 'karma:phantom', 'karma:chrome']);
+    grunt.registerTask('test:travis', ['typescript', 'karma:phantom']);
 };

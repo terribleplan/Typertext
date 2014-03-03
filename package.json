@@ -25,6 +25,6 @@
     },
     "license": "MIT",
     "scripts": {
-        "test": "./node_modules/.bin/grunt test"
+        "test": "./node_modules/.bin/grunt test:travis"
     }
 }
