@@ -1,5 +1,5 @@
 describe("Typertext.Http.HttpRequest", function() {
-    it("Exists", function() {
+    it("exists", function() {
         expect(typeof Typertext.Http.HttpRequest).toBe("function");
     });
 });
