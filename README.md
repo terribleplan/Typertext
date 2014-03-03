@@ -14,6 +14,7 @@ Todo
 ----
 - More robust error handling
 - IE 8-9 CORS support (XDomain)
+- Integrate with Sauce Labs
 
 Notes
 -----
