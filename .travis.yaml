@@ -2,3 +2,9 @@ language: node_js
 node_js:
   - 0.8
   - 0.10
+  - 0.11
+env:
+  matrix:
+  global:
+    secure: "cPBnfWyT5IYtTEzk8/+CJnOZ7+PukuezjKTtFxkgomliSUTo23BCUzXAxTsQeq13ZmxITouoFzwxt5Wfb3qBanodwNpX4LCQ1fwvR/WXk/fxfCStukr0qR4Yc3c0j9Ocj74zaPn0j7JJXY7mdFdiUwrKy+eyRW8hdnY9N9KFEZA="
+    secure: "TpqYB8dBCofefMxh5EWczpgJ8bVnz1jbSGeYNFKX0vLkhQo/YelU9TTNJ00t8zmINNsfFqCKye/wRKDoeQ4rY1whdIx7U5MRol1tzvoHk6D64UK0GFqBeMKNEV+nRwUS1JSH5hOYqOrwvUmY717kXyu+tG26VqSszmoLaC6h6GI="
