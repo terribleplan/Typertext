@@ -1,4 +1,4 @@
-describe("Typertext.Http.HttpException", function () {
+describe("", function () {
     it("exists", function () {
         expect(typeof Typertext.Http.HttpException).toEqual("function");
     });
