@@ -2,6 +2,8 @@ Typertext
 =========
 Typertext is a TypeScript native library for simple, sane, and extensible HTTP requests.
 
+[![Build Status](https://secure.travis-ci.org/terribleplan/Typertext.png?branch=master)](https://travis-ci.org/terribleplan/Typertext)
+
 Usage
 -----
 ````
@@ -11,9 +13,7 @@ Usage
 Todo
 ----
 - More robust error handling
-- Testing
 - IE 8-9 CORS support (XDomain)
-- CI
 
 Notes
 -----
