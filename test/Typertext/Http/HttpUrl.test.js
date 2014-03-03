@@ -101,8 +101,6 @@ describe("Typertext.Http.HttpUrl", function () {
             actualOutput = Typertext.Http.HttpUrl.FromUrl(input);
             expect(actualOutput).toEqual(expectedOutput);
         });
-
-
     });
 
     describe("DecodeQueryString", function () {
@@ -253,4 +251,45 @@ describe("Typertext.Http.HttpUrl", function () {
             expect(actualOutput).toEqual(expectedOutput);
         });
     });
+
+    describe("ToString", function () {
+        it("handles simple urls", function () {
+            var input = "http://example.com/",
+                actualOutput = Typertext.Http.HttpUrl.FromUrl(input).ToString();
+            expect(actualOutput).toEqual(input);
+
+            input = "https://example.com/";
+            actualOutput = Typertext.Http.HttpUrl.FromUrl(input).ToString();
+            expect(actualOutput).toEqual(input);
+
+            input = "http://example.com/hello";
+            actualOutput = Typertext.Http.HttpUrl.FromUrl(input).ToString();
+            expect(actualOutput).toEqual(input);
+
+            input = "http://example.com/index.html";
+            actualOutput = Typertext.Http.HttpUrl.FromUrl(input).ToString();
+            expect(actualOutput).toEqual(input);
+
+            input = "http://example.com/?with=query";
+            actualOutput = Typertext.Http.HttpUrl.FromUrl(input).ToString();
+            expect(actualOutput).toEqual(input);
+
+            input = "http://example.com:81/";
+            actualOutput = Typertext.Http.HttpUrl.FromUrl(input).ToString();
+            expect(actualOutput).toEqual(input);
+        });
+        it("handles multiple complex urls", function () {
+            var input = "https://example.com:453/path/to/some.php?with=query",
+                actualOutput = Typertext.Http.HttpUrl.FromUrl(input).ToString();
+            expect(actualOutput).toEqual(input);
+
+            input = "http://example.com:22/path/thing/?without=";
+            actualOutput = Typertext.Http.HttpUrl.FromUrl(input).ToString();
+            expect(actualOutput).toEqual(input);
+
+            input = "https://example.com:80/path/thing/.htaccess?version=125&something=else";
+            actualOutput = Typertext.Http.HttpUrl.FromUrl(input).ToString();
+            expect(actualOutput).toEqual(input);
+        });
+    })
 });
