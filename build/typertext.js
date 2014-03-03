@@ -193,7 +193,7 @@ var Typertext;
                 if (typeof path === "undefined") { path = "/"; }
                 if (typeof queryString === "undefined") { queryString = {}; }
                 if (typeof port === "undefined") { port = 0; }
-                if (port < 1 || port > 65535) {
+                if (port < 1 || port > 65535 || isNaN(port)) {
                     port = HttpUrl.DefaultPort(protocol);
                 }
 

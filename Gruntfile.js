@@ -7,7 +7,11 @@ module.exports = function (grunt) {
             unit: {
                 configFile: "karma.conf.js",
                 singleRun: true,
-                browsers: ['PhantomJS']
+                browsers: ["PhantomJS", "Chrome"]
+            },
+            watch: {
+                configFile: "karma.conf.js",
+                browsers: ["PhantomJS", "Chrome"]
             }
         },
         typescript: {

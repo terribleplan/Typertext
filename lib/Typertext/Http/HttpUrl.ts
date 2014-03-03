@@ -141,7 +141,7 @@ module Typertext.Http {
          * @constructor
          */
         constructor(domain:string, protocol:HttpProtocol = HttpProtocol.http, path:string = "/", queryString:HttpQueryString = {}, port:number = 0) {
-            if (port < 1 || port > 65535) {
+            if (port < 1 || port > 65535 || isNaN(port)) {
                 port = HttpUrl.DefaultPort(protocol);
             }
 
