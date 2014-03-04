@@ -1,4 +1,5 @@
 module.exports = function (grunt) {
+    grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-karma');
     grunt.loadNpmTasks('grunt-typescript');
 
@@ -53,10 +54,30 @@ module.exports = function (grunt) {
                     "sourcemap": true
                 }
             }
+        },
+        uglify: {
+            base: {
+                options: {
+                    sourceMap: true,
+                    sourceMapIncludeSources: true,
+                    inSourceMap: "<%= typescript.base.dest%>.map",
+                    sourceMapName: "build/typertext.min.js.map",
+                    mangle: true,
+                    beautify: false,
+                    compress: true
+                },
+                files: {
+                    'build/typertext.min.js': [
+                        '<%= typescript.base.dest %>'
+                    ]
+                }
+            }
         }
     });
 
     grunt.registerTask('default', ['typescript']);
+
+    grunt.registerTask('build', ['typescript:base', 'uglify:base']);
 
     grunt.registerTask('test', ['typescript', 'karma:phantom', 'karma:chrome']);
     grunt.registerTask('test:travis', ['typescript', 'karma:travis']);
