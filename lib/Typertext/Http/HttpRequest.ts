@@ -38,7 +38,7 @@ module Typertext.Http {
          * @param   {HttpResponseHandler}   callback
          */
         public Post(request:HttpUrl, postData:HttpPostData, callback:HttpResponseHandler):void {
-            this.RawRequest(HttpMethod.GET, request, postData, callback);
+            this.RawRequest(HttpMethod.POST, request, postData, callback);
         }
 
         /**

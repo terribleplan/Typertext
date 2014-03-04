@@ -51,7 +51,7 @@ module Typertext.Json {
          * @param   {JsonResponseHandler}   callback
          */
         public Post(request:HttpUrl, postData:HttpPostData, callback:JsonResponseHandler):void {
-            this.RawRequest(HttpMethod.GET, request, postData, callback);
+            this.RawRequest(HttpMethod.POST, request, postData, callback);
         }
 
         /**
