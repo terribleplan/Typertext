@@ -36,7 +36,7 @@ declare module Typertext {
     }
 }
 declare module Typertext.Http {
-    class HttpException extends BaseException<HttpResponseStatus> {
+    class HttpException extends BaseException<HttpResponse> {
     }
 }
 declare module Typertext.Http {

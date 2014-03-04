@@ -6,6 +6,6 @@ module Typertext.Http {
     /**
      * @class HttpException
      */
-    export class HttpException extends Typertext.BaseException<HttpResponseStatus> {
+    export class HttpException extends Typertext.BaseException<HttpResponse> {
     }
 }

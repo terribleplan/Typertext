@@ -117,26 +117,32 @@ var Typertext;
                 if (typeof postData === "undefined") { postData = {}; }
                 if (typeof callback === "undefined") { callback = function (c) {
                 }; }
+                var noop = function (i) {
+                    return "";
+                };
+
                 var xhr = new XMLHttpRequest();
+
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState == 4) {
                         var getHeader = function (name) {
                             return xhr.getResponseHeader(name);
                         };
+
                         if (xhr.status == 200) {
                             callback(new Typertext.Http.HttpResponse(0 /* success */, getHeader, xhr.status, xhr.responseText));
                         } else if (xhr.status >= 400 && xhr.status < 500) {
-                            throw new Typertext.Http.HttpException("Error type is unimplemented", -1, 2 /* clientError */);
+                            throw new Typertext.Http.HttpException("The server returned an error response state", xhr.status, new Typertext.Http.HttpResponse(2 /* clientError */, getHeader, xhr.status, xhr.responseText));
                         } else if (xhr.status >= 500 && xhr.status < 600) {
-                            throw new Typertext.Http.HttpException("Error type is unimplemented", -1, 1 /* serverError */);
-                        } else {
-                            throw new Typertext.Http.HttpException("An unknown error has occurred", -2, 4 /* unknownError */);
+                            throw new Typertext.Http.HttpException("The server returned an error response state", xhr.status, new Typertext.Http.HttpResponse(1 /* serverError */, getHeader, xhr.status, xhr.responseText));
                         }
+
+                        throw new Typertext.Http.HttpException("An unknown error has occurred", -2, new Typertext.Http.HttpResponse(4 /* unknownError */, getHeader, xhr.status, xhr.responseText));
                     }
                 };
 
                 xhr.ontimeout = function () {
-                    callback(new Typertext.Http.HttpResponse(5 /* timeout */));
+                    throw new Typertext.Http.HttpException("The server took too long to respond to our request", -1, new Typertext.Http.HttpResponse(5 /* timeout */, noop, -1, ""));
                 };
 
                 xhr.open(Typertext.Http.HttpMethod[method], request.ToString(), true);
@@ -147,6 +153,7 @@ var Typertext;
                 }
 
                 xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
                 xhr.send(Typertext.Http.HttpUrl.UrlEncodeObject(postData));
             };
             return HttpRequest;

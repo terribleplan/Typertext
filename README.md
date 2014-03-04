@@ -12,7 +12,6 @@ Usage
 
 Todo
 ----
-- More robust error handling
 - IE 8-9 CORS support (XDomain)
 - Integrate with Sauce Labs
 
@@ -30,6 +29,10 @@ This project is licensed under the MIT license, the text of which can be read in
 
 Changelog
 ---------
+####0.4.0
+- Modify how exceptions are handled
+- Steps toward Sauce integration
+
 ####0.3.3
 - Fix Post methods actually calling GET
 

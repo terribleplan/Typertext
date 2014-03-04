@@ -2,19 +2,44 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-karma');
     grunt.loadNpmTasks('grunt-typescript');
 
+    var sauceConf = {
+        linux: {opera: {low: 12, high: 12}, googlechrome: {low: 26, high: 32}, firefox: {low: 3, high: 27}},
+        "OS X 10.9": {googlechrome: {low: 31, high: 31}, firefox: {low: 4, high: 26}},
+        "OS X 10.8": {googlechrome: {low: 27, high: 32}, safari: {low: 6, high: 6}},
+        "OS X 10.6": {googlechrome: {low: 27, high: 32}, safari: {low: 5, high: 5}, firefox: {low: 3, high: 27}},
+        "Windows XP": {googlechrome: {low: 26, high: 32}, safari: {low: 3, high: 5}, opera: {low: 9, high: 12}, firefox: {low: 4, high: 27}},
+        "Windows 7": {googlechrome: {low: 26, high: 32}, safari: {low: 5, high: 5}, opera: {low: 9, high: 12}, firefox: {low: 4, high: 27}},
+        "Windows 8": {googlechrome: {low: 26, high: 32}, opera: {low: 9, high: 10}, firefox: {low: 4, high: 27}},
+        "Windows 8.1": {googlechrome: {low: 26, high: 32}, opera: {low: 9, high: 10}, firefox: {low: 4, high: 27}}
+    };
+
+    var sauceBrowsers = [];
+    for (var operatingSystem in sauceConf) {
+        for (var browser in sauceConf[operatingSystem]) {
+            for (var i = sauceConf[operatingSystem][browser].low; i < sauceConf[operatingSystem][browser].high; i++) {
+                sauceBrowsers.push((operatingSystem + "_" + browser + "_" + i).toLowerCase().replace(" ", "-"));
+            }
+        }
+    }
+
+    //TODO integrate with Sauce
+    var travisBrowsers = [];//sauceBrowsers.slice(0);
+    travisBrowsers.push("PhantomJS");
+
     grunt.initConfig({
         karma: {
-            phantom: {
+            local: {
                 configFile: "karma.conf.js",
                 singleRun: true,
-                browsers: ["PhantomJS"]
+                browsers: ["Chrome", "PhantomJS"]
             },
-            chrome: {
+            travis: {
                 configFile: "karma.conf.js",
                 singleRun: true,
-                browsers: ["Chrome"]
+                browsers: travisBrowsers
             },
             watch: {
+                autoWatch: true,
                 configFile: "karma.conf.js",
                 browsers: ["PhantomJS", "Chrome"]
             }
@@ -34,5 +59,5 @@ module.exports = function (grunt) {
     grunt.registerTask('default', ['typescript']);
 
     grunt.registerTask('test', ['typescript', 'karma:phantom', 'karma:chrome']);
-    grunt.registerTask('test:travis', ['typescript', 'karma:phantom']);
+    grunt.registerTask('test:travis', ['typescript', 'karma:travis']);
 };

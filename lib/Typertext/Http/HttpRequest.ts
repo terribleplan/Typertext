@@ -17,7 +17,7 @@ module Typertext.Http {
          * @version     0.3.0
          * @constructor
          */
-        constructor() {
+            constructor() {
         }
 
         /**
@@ -52,42 +52,57 @@ module Typertext.Http {
          */
         public RawRequest(method:HttpMethod, request:HttpUrl, postData:HttpPostData = {}, callback:HttpResponseHandler = (c)=> {
         }):void {
+            var noop = (i:string)=>{
+                return "";
+            };
+
+            //Create a XHR
             var xhr = new XMLHttpRequest();
+
+            //And let us know when it does something
             xhr.onreadystatechange = ()=> {
-                //Once the request completes
+                //If the request is complete
                 if (xhr.readyState == 4) {
+                    //Prepare a getter for the header
                     var getHeader = (name:string):string => {
                         return xhr.getResponseHeader(name);
                     };
+
+                    //Check the status
                     if (xhr.status == 200) {
+                        //And either succeed
                         callback(new HttpResponse(HttpResponseStatus.success, getHeader, xhr.status, xhr.responseText));
-
                     } else if (xhr.status >= 400 && xhr.status < 500) {
-                        //TODO generate a client error callback
-                        throw new HttpException("Error type is unimplemented", -1, HttpResponseStatus.clientError);
-
+                        //Or fail miserably
+                        throw new HttpException("The server returned an error response state", xhr.status, new HttpResponse(HttpResponseStatus.clientError, getHeader, xhr.status, xhr.responseText));
                     } else if (xhr.status >= 500 && xhr.status < 600) {
-                        //TODO generate a server error callback
-                        throw new HttpException("Error type is unimplemented", -1, HttpResponseStatus.serverError);
-
-                    } else {
-                        throw new HttpException("An unknown error has occurred", -2, HttpResponseStatus.unknownError);
+                        //Again
+                        throw new HttpException("The server returned an error response state", xhr.status, new HttpResponse(HttpResponseStatus.serverError, getHeader, xhr.status, xhr.responseText));
                     }
+                    //And again
+                    throw new HttpException("An unknown error has occurred", -2, new HttpResponse(HttpResponseStatus.unknownError, getHeader, xhr.status, xhr.responseText));
                 }
             };
 
+            //Or if it times out
             xhr.ontimeout = () => {
-                callback(new HttpResponse(HttpResponseStatus.timeout));
+                //And make a big deal of the failing
+                throw new HttpException("The server took too long to respond to our request", -1, new HttpResponse(HttpResponseStatus.timeout, noop, -1, ""));
             };
 
+            //Now connect
             xhr.open(HttpMethod[method], request.ToString(), true);
 
+            //And either send
             if (method == HttpMethod.GET) {
+                //A get request
                 xhr.send();
                 return;
             }
 
+            //Or set the content-type
             xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            //And send the post-data to the server
             xhr.send(HttpUrl.UrlEncodeObject(postData));
         }
     }
