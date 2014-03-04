@@ -34,8 +34,18 @@ module.exports = function (grunt) {
                 singleRun: true,
                 browsers: ["Chrome", "PhantomJS"]
             },
+            "local-min": {
+                configFile: "karma.conf.js",
+                singleRun: true,
+                browsers: ["Chrome", "PhantomJS"]
+            },
             travis: {
                 configFile: "karma.conf.js",
+                singleRun: true,
+                browsers: travisBrowsers
+            },
+            "travis-min": {
+                configFile: "karma.conf.min.js",
                 singleRun: true,
                 browsers: travisBrowsers
             },
@@ -77,8 +87,10 @@ module.exports = function (grunt) {
 
     grunt.registerTask('default', ['typescript']);
 
-    grunt.registerTask('build', ['typescript:base', 'uglify:base']);
+    grunt.registerTask('build', ['build:base']);
+    grunt.registerTask('build:base', ['typescript:base', 'uglify:base']);
 
-    grunt.registerTask('test', ['typescript', 'karma:phantom', 'karma:chrome']);
-    grunt.registerTask('test:travis', ['typescript', 'karma:travis']);
+    grunt.registerTask('test', ['karma:local']);
+    grunt.registerTask('test:local', ['karma:local','karma:local']);
+    grunt.registerTask('test:travis', ['build:base', 'karma:travis', 'karma:travis-min']);
 };
