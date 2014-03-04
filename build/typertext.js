@@ -110,7 +110,7 @@ var Typertext;
             };
 
             HttpRequest.prototype.Post = function (request, postData, callback) {
-                this.RawRequest(0 /* GET */, request, postData, callback);
+                this.RawRequest(1 /* POST */, request, postData, callback);
             };
 
             HttpRequest.prototype.RawRequest = function (method, request, postData, callback) {
@@ -323,7 +323,7 @@ var Typertext;
             };
 
             JsonRequest.prototype.Post = function (request, postData, callback) {
-                this.RawRequest(0 /* GET */, request, postData, callback);
+                this.RawRequest(1 /* POST */, request, postData, callback);
             };
 
             JsonRequest.prototype.RawRequest = function (method, request, postData, callback) {
