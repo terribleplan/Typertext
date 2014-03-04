@@ -78,9 +78,10 @@ module Typertext.Http {
                     } else if (xhr.status >= 500 && xhr.status < 600) {
                         //Again
                         throw new HttpException("The server returned an error response state", xhr.status, new HttpResponse(HttpResponseStatus.serverError, getHeader, xhr.status, xhr.responseText));
+                    } else {
+                        //And again
+                        throw new HttpException("An unknown error has occurred", -2, new HttpResponse(HttpResponseStatus.unknownError, getHeader, xhr.status, xhr.responseText));
                     }
-                    //And again
-                    throw new HttpException("An unknown error has occurred", -2, new HttpResponse(HttpResponseStatus.unknownError, getHeader, xhr.status, xhr.responseText));
                 }
             };
 
