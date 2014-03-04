@@ -135,9 +135,9 @@ var Typertext;
                             throw new Typertext.Http.HttpException("The server returned an error response state", xhr.status, new Typertext.Http.HttpResponse(2 /* clientError */, getHeader, xhr.status, xhr.responseText));
                         } else if (xhr.status >= 500 && xhr.status < 600) {
                             throw new Typertext.Http.HttpException("The server returned an error response state", xhr.status, new Typertext.Http.HttpResponse(1 /* serverError */, getHeader, xhr.status, xhr.responseText));
+                        } else {
+                            throw new Typertext.Http.HttpException("An unknown error has occurred", -2, new Typertext.Http.HttpResponse(4 /* unknownError */, getHeader, xhr.status, xhr.responseText));
                         }
-
-                        throw new Typertext.Http.HttpException("An unknown error has occurred", -2, new Typertext.Http.HttpResponse(4 /* unknownError */, getHeader, xhr.status, xhr.responseText));
                     }
                 };
 
