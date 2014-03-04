@@ -3,6 +3,7 @@ Typertext
 Typertext is a TypeScript native library for simple, sane, and extensible HTTP requests.
 
 [![Build Status](https://secure.travis-ci.org/terribleplan/Typertext.png?branch=master)](https://travis-ci.org/terribleplan/Typertext)
+[![Dependency Status](https://gemnasium.com/terribleplan/Typertext.png)](https://gemnasium.com/terribleplan/Typertext)
 
 Usage
 -----
