@@ -30,6 +30,9 @@ This project is licensed under the MIT license, the text of which can be read in
 
 Changelog
 ---------
+####0.3.3
+- Fix Post methods actually calling GET
+
 ####0.3.2
 - Added testing
 
