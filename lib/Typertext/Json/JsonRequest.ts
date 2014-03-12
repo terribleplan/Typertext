@@ -27,8 +27,9 @@ module Typertext.Json {
          *
          * @author      Kegan Myers <kegan@keganmyers.com>
          * @version     0.3.0
+         * @constructor
          */
-        constructor(jsonContentType:string = "application/json") {
+            constructor(jsonContentType:string = "application/json") {
             this.request = new HttpRequest();
             this.jsonType = jsonContentType;
         }
@@ -62,19 +63,25 @@ module Typertext.Json {
          * @param   {HttpPostData}          postData
          * @param   {JsonResponseHandler}   callback
          */
-        public RawRequest(method:HttpMethod, request:HttpUrl, postData:Typertext.Http.HttpPostData = {}, callback:JsonResponseHandler = (c)=> {
-        }) {
+        public RawRequest(method:HttpMethod, request:HttpUrl, postData:Typertext.Http.HttpPostData = {}, callback?:JsonResponseHandler) {
+            //Ensure we have an executable callback
+            if (typeof callback != "function") {
+                //Make a request and ignore the response, throwing exceptions in async code can be weird
+                this.request.RawRequest(method, request, postData, ()=>{});
+                return;
+            }
+
+            //Make a full request and handle the response
             this.request.RawRequest(method, request, postData, (response:HttpResponse)=> {
                 //Make sure that we got the Json content type we are expecting
                 if (response.GetContentType() != this.jsonType) {
-                    callback(new JsonResponse(HttpResponseStatus.responseError));
+                    //If not it is an invalid server response
+                    callback(JsonResponse.fromInvalidHttpResponse(response));
+                    return;
                 }
 
-                try {
-                    callback(JsonResponse.fromHttpResponse(response));
-                } catch (e) {
-                    throw new JsonException("Json parse exception", -1);
-                }
+                //If it is then we can just pass it straight through to the JSON response
+                callback(JsonResponse.fromHttpResponse(response));
             });
         }
     }

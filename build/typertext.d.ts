@@ -128,8 +128,11 @@ declare module Typertext.Json {
 }
 declare module Typertext.Json {
     class JsonResponse extends GenericResponse<JsonObject> {
+        private parseSuccess;
         static fromHttpResponse(httpResponse: Http.HttpResponse): JsonResponse;
-        constructor(status: Http.HttpResponseStatus, responseHeaderGetter?: (input: string) => string, httpResponseCode?: number, responseBody?: JsonObject);
+        static fromInvalidHttpResponse(httpResponse: Http.HttpResponse): JsonResponse;
+        constructor(status: Http.HttpResponseStatus, responseHeaderGetter?: (input: string) => string, httpResponseCode?: number, responseBody?: JsonObject, parseSuccess?: boolean);
+        public GetParseStatus(): boolean;
     }
 }
 declare module Typertext.Json {

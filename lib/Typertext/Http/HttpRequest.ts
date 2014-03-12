@@ -74,13 +74,13 @@ module Typertext.Http {
                         callback(new HttpResponse(HttpResponseStatus.success, getHeader, xhr.status, xhr.responseText));
                     } else if (xhr.status >= 400 && xhr.status < 500) {
                         //Or fail miserably
-                        throw new HttpException("The server returned an error response state", xhr.status, new HttpResponse(HttpResponseStatus.clientError, getHeader, xhr.status, xhr.responseText));
+                        callback(new HttpResponse(HttpResponseStatus.clientError, getHeader, xhr.status, xhr.responseText));
                     } else if (xhr.status >= 500 && xhr.status < 600) {
                         //Again
-                        throw new HttpException("The server returned an error response state", xhr.status, new HttpResponse(HttpResponseStatus.serverError, getHeader, xhr.status, xhr.responseText));
+                        callback(new HttpResponse(HttpResponseStatus.serverError, getHeader, xhr.status, xhr.responseText));
                     } else {
                         //And again
-                        throw new HttpException("An unknown error has occurred", -2, new HttpResponse(HttpResponseStatus.unknownError, getHeader, xhr.status, xhr.responseText));
+                        callback(new HttpResponse(HttpResponseStatus.unknownError, getHeader, xhr.status, xhr.responseText));
                     }
                 }
             };
@@ -88,7 +88,7 @@ module Typertext.Http {
             //Or if it times out
             xhr.ontimeout = () => {
                 //And make a big deal of the failing
-                throw new HttpException("The server took too long to respond to our request", -1, new HttpResponse(HttpResponseStatus.timeout, noop, -1, ""));
+                callback(new HttpResponse(HttpResponseStatus.timeout, noop, -1, ""));
             };
 
             //Now connect

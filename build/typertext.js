@@ -132,17 +132,17 @@ var Typertext;
                         if (xhr.status == 200) {
                             callback(new Typertext.Http.HttpResponse(0 /* success */, getHeader, xhr.status, xhr.responseText));
                         } else if (xhr.status >= 400 && xhr.status < 500) {
-                            throw new Typertext.Http.HttpException("The server returned an error response state", xhr.status, new Typertext.Http.HttpResponse(2 /* clientError */, getHeader, xhr.status, xhr.responseText));
+                            callback(new Typertext.Http.HttpResponse(2 /* clientError */, getHeader, xhr.status, xhr.responseText));
                         } else if (xhr.status >= 500 && xhr.status < 600) {
-                            throw new Typertext.Http.HttpException("The server returned an error response state", xhr.status, new Typertext.Http.HttpResponse(1 /* serverError */, getHeader, xhr.status, xhr.responseText));
+                            callback(new Typertext.Http.HttpResponse(1 /* serverError */, getHeader, xhr.status, xhr.responseText));
                         } else {
-                            throw new Typertext.Http.HttpException("An unknown error has occurred", -2, new Typertext.Http.HttpResponse(4 /* unknownError */, getHeader, xhr.status, xhr.responseText));
+                            callback(new Typertext.Http.HttpResponse(4 /* unknownError */, getHeader, xhr.status, xhr.responseText));
                         }
                     }
                 };
 
                 xhr.ontimeout = function () {
-                    throw new Typertext.Http.HttpException("The server took too long to respond to our request", -1, new Typertext.Http.HttpResponse(5 /* timeout */, noop, -1, ""));
+                    callback(new Typertext.Http.HttpResponse(5 /* timeout */, noop, -1, ""));
                 };
 
                 xhr.open(Typertext.Http.HttpMethod[method], request.ToString(), true);
@@ -315,8 +315,6 @@ var Typertext;
     (function (Json) {
         var HttpRequest = Typertext.Http.HttpRequest;
 
-        var HttpResponseStatus = Typertext.Http.HttpResponseStatus;
-
         var HttpMethod = Typertext.Http.HttpMethod;
 
         var JsonRequest = (function () {
@@ -336,18 +334,19 @@ var Typertext;
             JsonRequest.prototype.RawRequest = function (method, request, postData, callback) {
                 var _this = this;
                 if (typeof postData === "undefined") { postData = {}; }
-                if (typeof callback === "undefined") { callback = function (c) {
-                }; }
+                if (typeof callback != "function") {
+                    this.request.RawRequest(method, request, postData, function () {
+                    });
+                    return;
+                }
+
                 this.request.RawRequest(method, request, postData, function (response) {
                     if (response.GetContentType() != _this.jsonType) {
-                        callback(new Typertext.Json.JsonResponse(3 /* responseError */));
+                        callback(Typertext.Json.JsonResponse.fromInvalidHttpResponse(response));
+                        return;
                     }
 
-                    try  {
-                        callback(Typertext.Json.JsonResponse.fromHttpResponse(response));
-                    } catch (e) {
-                        throw new Typertext.Json.JsonException("Json parse exception", -1);
-                    }
+                    callback(Typertext.Json.JsonResponse.fromHttpResponse(response));
                 });
             };
             return JsonRequest;
@@ -359,13 +358,29 @@ var Typertext;
 var Typertext;
 (function (Typertext) {
     (function (Json) {
+        var HttpResponseStatus = Typertext.Http.HttpResponseStatus;
+
         var JsonResponse = (function (_super) {
             __extends(JsonResponse, _super);
-            function JsonResponse(status, responseHeaderGetter, httpResponseCode, responseBody) {
+            function JsonResponse(status, responseHeaderGetter, httpResponseCode, responseBody, parseSuccess) {
                 _super.call(this, status, responseHeaderGetter, httpResponseCode, responseBody);
+                parseSuccess = !!parseSuccess || false;
+                this.parseSuccess = parseSuccess;
             }
             JsonResponse.fromHttpResponse = function (httpResponse) {
-                return new JsonResponse(httpResponse.GetStatus(), httpResponse.GetHeader, httpResponse.GetHttpStatus(), window["JSON"].parse(httpResponse.GetContent()));
+                try  {
+                    return new JsonResponse(httpResponse.GetStatus(), httpResponse.GetHeader, httpResponse.GetHttpStatus(), window["JSON"].parse(httpResponse.GetContent()), true);
+                } catch (e) {
+                    return new JsonResponse(httpResponse.GetStatus(), httpResponse.GetHeader, httpResponse.GetHttpStatus(), null);
+                }
+            };
+
+            JsonResponse.fromInvalidHttpResponse = function (httpResponse) {
+                return new JsonResponse(3 /* responseError */, httpResponse.GetHeader, httpResponse.GetHttpStatus());
+            };
+
+            JsonResponse.prototype.GetParseStatus = function () {
+                return this.parseSuccess;
             };
             return JsonResponse;
         })(Typertext.GenericResponse);
