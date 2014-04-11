@@ -139,3 +139,23 @@ declare module Typertext.Json {
     interface JsonResponseHandler extends GenericResponseHandler<JsonResponse> {
     }
 }
+declare module Typertext.Transport {
+    interface GenericTransport {
+        RawRequest(method: Http.HttpMethod, request: Http.HttpUrl, postData: Http.HttpPostData, callback: Http.HttpResponseHandler): void;
+    }
+}
+declare module Typertext.Transport {
+    class TransportChooser {
+        static GetTransport(method: Http.HttpMethod, request: Http.HttpUrl): GenericTransport;
+    }
+}
+declare module Typertext.Transport {
+    class XDR implements GenericTransport {
+        public RawRequest(method: Http.HttpMethod, request: Http.HttpUrl, postData?: Http.HttpPostData, callback?: Http.HttpResponseHandler): void;
+    }
+}
+declare module Typertext.Transport {
+    class XHR implements GenericTransport {
+        public RawRequest(method: Http.HttpMethod, request: Http.HttpUrl, postData?: Http.HttpPostData, callback?: Http.HttpResponseHandler): void;
+    }
+}
