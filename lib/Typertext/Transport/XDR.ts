@@ -36,6 +36,8 @@ module Typertext.Transport {
                 callback(new HttpResponse(HttpResponseStatus.success, getHeader, 200, xdr.responseText));
             };
 
+            xdr.onprogress = () => null;
+
             //Finally, open the request
             xdr.open(HttpMethod[method], request.ToString());
 
