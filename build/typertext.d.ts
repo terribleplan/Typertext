@@ -146,7 +146,7 @@ declare module Typertext.Transport {
 }
 declare module Typertext.Transport {
     class TransportChooser {
-        static GetTransport(method: Http.HttpMethod, request: Http.HttpUrl, postData: Http.HttpPostData, callback: Http.HttpResponseHandler): GenericTransport;
+        static Transport(method: Http.HttpMethod, request: Http.HttpUrl, postData: Http.HttpPostData, callback: Http.HttpResponseHandler): GenericTransport;
     }
 }
 declare module Typertext.Transport {

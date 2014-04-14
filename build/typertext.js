@@ -117,7 +117,7 @@ var Typertext;
                 if (typeof postData === "undefined") { postData = {}; }
                 if (typeof callback === "undefined") { callback = function (c) {
                 }; }
-                Typertext.Transport.TransportChooser.GetTransport(method, request, postData, callback);
+                Typertext.Transport.TransportChooser.Transport(method, request, postData, callback);
             };
             return HttpRequest;
         })();
@@ -369,7 +369,7 @@ var Typertext;
         var TransportChooser = (function () {
             function TransportChooser() {
             }
-            TransportChooser.GetTransport = function (method, request, postData, callback) {
+            TransportChooser.Transport = function (method, request, postData, callback) {
                 var ieLte9 = false;
                 var isXdomain = false;
                 var isXprotocol = false;
@@ -427,6 +427,10 @@ var Typertext;
 
                 xdr.onload = function () {
                     callback(new HttpResponse(0 /* success */, getHeader, 200, xdr.responseText));
+                };
+
+                xdr.onprogress = function () {
+                    return null;
                 };
 
                 xdr.open(HttpMethod[method], request.ToString());
