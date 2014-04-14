@@ -117,7 +117,7 @@ var Typertext;
                 if (typeof postData === "undefined") { postData = {}; }
                 if (typeof callback === "undefined") { callback = function (c) {
                 }; }
-                Typertext.Transport.TransportChooser.GetTransport(method, request).RawRequest(method, request, postData, callback);
+                Typertext.Transport.TransportChooser.GetTransport(method, request, postData, callback);
             };
             return HttpRequest;
         })();
@@ -354,6 +354,12 @@ var Typertext;
 var Typertext;
 (function (Typertext) {
     (function (Transport) {
+        var GenericTransport = (function () {
+            function GenericTransport(method, request, postData, callback) {
+            }
+            return GenericTransport;
+        })();
+        Transport.GenericTransport = GenericTransport;
     })(Typertext.Transport || (Typertext.Transport = {}));
     var Transport = Typertext.Transport;
 })(Typertext || (Typertext = {}));
@@ -363,15 +369,15 @@ var Typertext;
         var TransportChooser = (function () {
             function TransportChooser() {
             }
-            TransportChooser.GetTransport = function (method, request) {
+            TransportChooser.GetTransport = function (method, request, postData, callback) {
                 var ieLte9 = false;
                 var isXdomain = false;
                 var isXprotocol = false;
 
                 if (!ieLte9) {
-                    return new Typertext.Transport.XDR();
+                    return new Typertext.Transport.XDR(method, request, postData, callback);
                 } else if (isXdomain && !isXprotocol) {
-                    return new Typertext.Transport.XHR();
+                    return new Typertext.Transport.XHR(method, request, postData, callback);
                 }
 
                 throw {};
@@ -385,16 +391,55 @@ var Typertext;
 var Typertext;
 (function (Typertext) {
     (function (Transport) {
-        var XDR = (function () {
-            function XDR() {
-            }
-            XDR.prototype.RawRequest = function (method, request, postData, callback) {
+        var HttpMethod = Typertext.Http.HttpMethod;
+        var HttpUrl = Typertext.Http.HttpUrl;
+
+        var HttpResponseStatus = Typertext.Http.HttpResponseStatus;
+        var HttpResponse = Typertext.Http.HttpResponse;
+
+        var XDR = (function (_super) {
+            __extends(XDR, _super);
+            function XDR(method, request, postData, callback) {
                 if (typeof postData === "undefined") { postData = {}; }
                 if (typeof callback === "undefined") { callback = function (c) {
+                    return null;
                 }; }
-            };
+                _super.call(this, method, request, postData, callback);
+
+                var xdr = new XDomainRequest();
+
+                var getHeader = function (name) {
+                    if (name.toLowerCase() === "content-type") {
+                        return xdr.contentType;
+                    }
+                    return undefined;
+                };
+
+                xdr.ontimeout = function () {
+                    callback(new HttpResponse(5 /* timeout */, function (i) {
+                        return "";
+                    }, -1, ""));
+                };
+
+                xdr.onerror = function () {
+                    callback(new HttpResponse(4 /* unknownError */, getHeader, -1, xdr.responseText));
+                };
+
+                xdr.onload = function () {
+                    callback(new HttpResponse(0 /* success */, getHeader, 200, xdr.responseText));
+                };
+
+                xdr.open(HttpMethod[method], request.ToString());
+
+                if (method == 0 /* GET */) {
+                    xdr.send();
+                    return;
+                }
+
+                xdr.send(HttpUrl.UrlEncodeObject(postData));
+            }
             return XDR;
-        })();
+        })(Typertext.Transport.GenericTransport);
         Transport.XDR = XDR;
     })(Typertext.Transport || (Typertext.Transport = {}));
     var Transport = Typertext.Transport;
@@ -408,16 +453,14 @@ var Typertext;
         var HttpResponseStatus = Typertext.Http.HttpResponseStatus;
         var HttpResponse = Typertext.Http.HttpResponse;
 
-        var XHR = (function () {
-            function XHR() {
-            }
-            XHR.prototype.RawRequest = function (method, request, postData, callback) {
+        var XHR = (function (_super) {
+            __extends(XHR, _super);
+            function XHR(method, request, postData, callback) {
                 if (typeof postData === "undefined") { postData = {}; }
                 if (typeof callback === "undefined") { callback = function (c) {
+                    return null;
                 }; }
-                var noop = function (i) {
-                    return "";
-                };
+                _super.call(this, method, request, postData, callback);
 
                 var xhr = new XMLHttpRequest();
 
@@ -440,7 +483,9 @@ var Typertext;
                 };
 
                 xhr.ontimeout = function () {
-                    callback(new HttpResponse(5 /* timeout */, noop, -1, ""));
+                    callback(new HttpResponse(5 /* timeout */, function (i) {
+                        return "";
+                    }, -1, ""));
                 };
 
                 xhr.open(HttpMethod[method], request.ToString(), true);
@@ -453,9 +498,9 @@ var Typertext;
                 xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
                 xhr.send(HttpUrl.UrlEncodeObject(postData));
-            };
+            }
             return XHR;
-        })();
+        })(Typertext.Transport.GenericTransport);
         Transport.XHR = XHR;
     })(Typertext.Transport || (Typertext.Transport = {}));
     var Transport = Typertext.Transport;

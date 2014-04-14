@@ -52,7 +52,7 @@ module Typertext.Http {
          */
         public RawRequest(method:HttpMethod, request:HttpUrl, postData:HttpPostData = {}, callback:HttpResponseHandler = (c)=> {
         }):void {
-            Typertext.Transport.TransportChooser.GetTransport(method, request).RawRequest(method, request, postData, callback);
+            Typertext.Transport.TransportChooser.Transport(method, request, postData, callback);
         }
     }
 }

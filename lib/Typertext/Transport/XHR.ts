@@ -6,12 +6,9 @@ module Typertext.Transport {
     import HttpResponseStatus = Typertext.Http.HttpResponseStatus;
     import HttpResponse = Typertext.Http.HttpResponse;
 
-    export class XHR implements GenericTransport {
-        RawRequest(method:HttpMethod, request:HttpUrl, postData:HttpPostData = {}, callback:HttpResponseHandler = (c)=> {
-        }):void {
-            var noop = (i:string)=>{
-                return "";
-            };
+    export class XHR extends GenericTransport {
+        constructor(method:HttpMethod, request:HttpUrl, postData:HttpPostData = {}, callback:HttpResponseHandler = (c)=> null) {
+            super(method, request, postData, callback);
 
             //Create a XHR
             var xhr = new XMLHttpRequest();
@@ -45,7 +42,7 @@ module Typertext.Transport {
             //Or if it times out
             xhr.ontimeout = () => {
                 //And make a big deal of the failing
-                callback(new HttpResponse(HttpResponseStatus.timeout, noop, -1, ""));
+                callback(new HttpResponse(HttpResponseStatus.timeout, (i:string)=>"", -1, ""));
             };
 
             //Now connect

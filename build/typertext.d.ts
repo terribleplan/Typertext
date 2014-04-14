@@ -140,22 +140,22 @@ declare module Typertext.Json {
     }
 }
 declare module Typertext.Transport {
-    interface GenericTransport {
-        RawRequest(method: Http.HttpMethod, request: Http.HttpUrl, postData: Http.HttpPostData, callback: Http.HttpResponseHandler): void;
+    class GenericTransport {
+        constructor(method: Http.HttpMethod, request: Http.HttpUrl, postData: Http.HttpPostData, callback: Http.HttpResponseHandler);
     }
 }
 declare module Typertext.Transport {
     class TransportChooser {
-        static GetTransport(method: Http.HttpMethod, request: Http.HttpUrl): GenericTransport;
+        static GetTransport(method: Http.HttpMethod, request: Http.HttpUrl, postData: Http.HttpPostData, callback: Http.HttpResponseHandler): GenericTransport;
     }
 }
 declare module Typertext.Transport {
-    class XDR implements GenericTransport {
-        public RawRequest(method: Http.HttpMethod, request: Http.HttpUrl, postData?: Http.HttpPostData, callback?: Http.HttpResponseHandler): void;
+    class XDR extends GenericTransport {
+        constructor(method: Http.HttpMethod, request: Http.HttpUrl, postData?: Http.HttpPostData, callback?: Http.HttpResponseHandler);
     }
 }
 declare module Typertext.Transport {
-    class XHR implements GenericTransport {
-        public RawRequest(method: Http.HttpMethod, request: Http.HttpUrl, postData?: Http.HttpPostData, callback?: Http.HttpResponseHandler): void;
+    class XHR extends GenericTransport {
+        constructor(method: Http.HttpMethod, request: Http.HttpUrl, postData?: Http.HttpPostData, callback?: Http.HttpResponseHandler);
     }
 }
