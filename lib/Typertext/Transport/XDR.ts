@@ -21,21 +21,22 @@ module Typertext.Transport {
                 return undefined;
             };
 
-            //No handle timeouts,
+            //Now to handle timeouts,
             xdr.ontimeout = () => {
                 callback(new HttpResponse(HttpResponseStatus.timeout, (i:string)=>"", -1, ""));
             };
 
-            //all errors (because XDR sucks)
+            //all errors (because XDR sucks),
             xdr.onerror = () => {
                 callback(new HttpResponse(HttpResponseStatus.unknownError, getHeader, -1, xdr.responseText));
             };
 
-            //and success.
+            //successes,
             xdr.onload = () => {
                 callback(new HttpResponse(HttpResponseStatus.success, getHeader, 200, xdr.responseText));
             };
 
+            //and even more stupidity (because XDR REALLY sucks).
             xdr.onprogress = () => null;
 
             //Finally, open the request
