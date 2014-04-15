@@ -253,6 +253,22 @@ var Typertext;
             HttpUrl.prototype.ToString = function () {
                 return Typertext.Http.HttpProtocol[this.protocol] + "://" + this.domain + ((this.port == HttpUrl.DefaultPort(this.protocol)) ? "" : ":" + this.port) + this.path + HttpUrl.EncodeQueryString(this.queryString);
             };
+
+            HttpUrl.prototype.GetPort = function () {
+                return this.port;
+            };
+
+            HttpUrl.prototype.GetDomain = function () {
+                return this.domain;
+            };
+
+            HttpUrl.prototype.GetProtocol = function () {
+                return this.protocol;
+            };
+
+            HttpUrl.prototype.CrossOriginCheck = function (url) {
+                return (this.domain === url.GetDomain() && this.port === url.GetPort() && this.protocol === url.GetProtocol());
+            };
             return HttpUrl;
         })();
         Http.HttpUrl = HttpUrl;
@@ -366,18 +382,29 @@ var Typertext;
 var Typertext;
 (function (Typertext) {
     (function (Transport) {
+        var HttpUrl = Typertext.Http.HttpUrl;
+
         var TransportChooser = (function () {
             function TransportChooser() {
             }
             TransportChooser.Transport = function (method, request, postData, callback) {
-                var ieLte9 = false;
-                var isXdomain = false;
-                var isXprotocol = false;
+                var ieTestDiv = document.createElement("div");
+                ieTestDiv.innerHTML = "<!--[if lte IE 7]><i></i><![endif]-->";
 
-                if (!ieLte9) {
-                    return new Typertext.Transport.XDR(method, request, postData, callback);
-                } else if (isXdomain && !isXprotocol) {
+                if (ieTestDiv.getElementsByTagName("i").length === 1) {
+                    throw {};
+                }
+
+                ieTestDiv.innerHTML = "<!--[if lte IE 9]><i></i><![endif]-->";
+                var ieLte9 = (ieTestDiv.getElementsByTagName("i").length === 1);
+                var origin = HttpUrl.FromUrl(window.location.href);
+
+                if (!origin.CrossOriginCheck(url) || !ieLte9) {
                     return new Typertext.Transport.XHR(method, request, postData, callback);
+                }
+
+                if (origin.GetProtocol() === request.GetProtocol()) {
+                    return new Typertext.Transport.XDR(method, request, postData, callback);
                 }
 
                 throw {};
