@@ -399,7 +399,7 @@ var Typertext;
                 var ieLte9 = (ieTestDiv.getElementsByTagName("i").length === 1);
                 var origin = HttpUrl.FromUrl(window.location.href);
 
-                if (!origin.CrossOriginCheck(url) || !ieLte9) {
+                if (!origin.CrossOriginCheck(origin) || !ieLte9) {
                     return new Typertext.Transport.XHR(method, request, postData, callback);
                 }
 

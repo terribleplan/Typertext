@@ -29,7 +29,7 @@ module Typertext.Transport {
             var origin = HttpUrl.FromUrl(window.location.href);
 
             //If this is a CORS request in a modern browser
-            if (!origin.CrossOriginCheck(url) || !ieLte9) {
+            if (!origin.CrossOriginCheck(origin) || !ieLte9) {
                 //Just use a standard XHR request
                 return new XHR(method, request, postData, callback);
             }

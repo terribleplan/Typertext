@@ -104,6 +104,10 @@ declare module Typertext.Http {
         private static splitString(input, separator, limit?);
         constructor(domain: string, protocol?: HttpProtocol, path?: string, queryString?: HttpQueryString, port?: number);
         public ToString(): string;
+        public GetPort(): number;
+        public GetDomain(): string;
+        public GetProtocol(): HttpProtocol;
+        public CrossOriginCheck(url: HttpUrl): boolean;
     }
 }
 declare module Typertext.Json {
