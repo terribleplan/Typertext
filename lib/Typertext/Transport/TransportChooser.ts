@@ -1,16 +1,46 @@
 module Typertext.Transport {
-    export class TransportChooser {
-        static Transport(method:Typertext.Http.HttpMethod, request:Typertext.Http.HttpUrl, postData:Typertext.Http.HttpPostData, callback:Typertext.Http.HttpResponseHandler):GenericTransport {
-            var ieLte9 = false;
-            var isXdomain = false;
-            var isXprotocol = false;
+    import HttpMethod = Typertext.Http.HttpMethod;
+    import HttpUrl = Typertext.Http.HttpUrl
+    import HttpPostData = Typertext.Http.HttpPostData;
+    import HttpResponseHandler = Typertext.Http.HttpResponseHandler;
 
-            if (!ieLte9) {
-                return new XDR(method, request, postData, callback);
-            } else if (isXdomain && !isXprotocol) {
+    export class TransportChooser {
+        /**
+         *
+         * @param   {HttpMethod}            method
+         * @param   {HttpUrl}               request
+         * @param   {HttpPostData}          postData
+         * @param   {HttpResponseHandler}   callback
+         * @returns {GenericTransport}
+         */
+        static Transport(method:HttpMethod, request:HttpUrl, postData:HttpPostData, callback:HttpResponseHandler):GenericTransport {
+            //Prepare to test if we are in IE
+            var ieTestDiv = document.createElement("div");
+            ieTestDiv.innerHTML = "<!--[if lte IE 7]><i></i><![endif]-->";
+
+            if (ieTestDiv.getElementsByTagName("i").length === 1) {
+                //There is currently no supported transport for IE lte 7
+                throw {};
+            }
+
+            //Now test how we should proceed normally
+            ieTestDiv.innerHTML = "<!--[if lte IE 9]><i></i><![endif]-->";
+            var ieLte9 = (ieTestDiv.getElementsByTagName("i").length === 1);
+            var origin = HttpUrl.FromUrl(window.location.href);
+
+            //If this is a CORS request in a modern browser
+            if (!origin.CrossOriginCheck(url) || !ieLte9) {
+                //Just use a standard XHR request
                 return new XHR(method, request, postData, callback);
             }
 
+            //Otherwise if we aren't cross protocol
+            if (origin.GetProtocol() === request.GetProtocol()) {
+                //Use IE's silly XDomainRequest
+                return new XDR(method, request, postData, callback);
+            }
+
+            //Otherwise there is no supported transport
             throw {};
         }
     }

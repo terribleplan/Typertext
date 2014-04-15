@@ -166,5 +166,41 @@ module Typertext.Http {
                 ((this.port == HttpUrl.DefaultPort(this.protocol)) ? "" : ":" + this.port) + this.path +
                 HttpUrl.EncodeQueryString(this.queryString);
         }
+
+        /**
+         * Return the port number that this url uses
+         *
+         * @returns {number}
+         */
+        public GetPort():number {
+            return this.port;
+        }
+
+        /**
+         * Return the domain that this url uses
+         *
+         * @returns {string}
+         */
+        public GetDomain():string {
+            return this.domain;
+        }
+
+        /**
+         * Return the protocol that this url uses
+         *
+         * @returns {HttpProtocol}
+         */
+        public GetProtocol():HttpProtocol {
+            return this.protocol;
+        }
+
+        /**
+         * Return whether or not a given URL is in the same domain
+         *
+         * @returns {boolean}
+         */
+        public CrossOriginCheck(url:HttpUrl):boolean {
+            return (this.domain === url.GetDomain() && this.port === url.GetPort() && this.protocol === url.GetProtocol());
+        }
     }
 }
