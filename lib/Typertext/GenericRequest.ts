@@ -1,3 +1,5 @@
+/// <reference path="Transport/TransportConstructor.ts" />
+
 /**
  * @module      Typertext
  * @submodule   Http
@@ -7,6 +9,7 @@ module Typertext {
     import HttpMethod = Typertext.Http.HttpMethod;
     import HttpPostData = Typertext.Http.HttpPostData;
     import HttpUrl = Typertext.Http.HttpUrl;
+    import TransportConstructor = Typertext.Transport.TransportConstructor;
 
     /**
      * A class to simplify passing both the status and data of a completed proxy request
@@ -45,7 +48,8 @@ module Typertext {
          * @param   {HttpUrl}                   request
          * @param   {HttpPostData}              postData
          * @param   {GenericResponseHandler}    callback
+         * @param   {GenericTransport}          transport
          */
-        RawRequest(method:HttpMethod, request:HttpUrl, postData?:HttpPostData, callback?:T):void;
+        RawRequest(method:HttpMethod, request:HttpUrl, postData?:HttpPostData, callback?:T, transport?:TransportConstructor):void;
     }
 }

@@ -6,51 +6,67 @@ module Typertext.Transport {
     import HttpResponseStatus = Typertext.Http.HttpResponseStatus;
     import HttpResponse = Typertext.Http.HttpResponse;
 
-    export class XDR extends GenericTransport {
+    export class XDR implements GenericTransport {
+        private xdr:XDomainRequest;
+        private postData: HttpPostData;
+        private method:HttpMethod;
+        private request:HttpUrl;
+        private callback:HttpResponseHandler;
+
         constructor(method:HttpMethod, request:HttpUrl, postData:HttpPostData = {}, callback:HttpResponseHandler = (c)=> null) {
-            super(method, request, postData, callback);
-
+            //Store the request information
+            this.postData = postData;
+            this.method = method;
+            this.request = request;
+            this.callback = callback;
             //Create a XDR
-            var xdr = new XDomainRequest();
+            this.xdr = new XDomainRequest();
+        }
 
+        Send():void {
             //and an interface to get the content type of the response
             var getHeader = (name:string):string => {
                 if (name.toLowerCase() === "content-type") {
-                    return xdr.contentType;
+                    return this.xdr.contentType;
                 }
                 return undefined;
             };
 
             //Now to handle timeouts,
-            xdr.ontimeout = () => {
-                callback(new HttpResponse(HttpResponseStatus.timeout, (i:string)=>"", -1, ""));
+            this.xdr.ontimeout = () => {
+                this.callback(new HttpResponse(HttpResponseStatus.timeout, (i:string)=>"", -1, ""));
             };
 
             //all errors (because XDR sucks),
-            xdr.onerror = () => {
-                callback(new HttpResponse(HttpResponseStatus.unknownError, getHeader, -1, xdr.responseText));
+            this.xdr.onerror = () => {
+                this.callback(new HttpResponse(HttpResponseStatus.unknownError, getHeader, -1, this.xdr.responseText));
             };
 
             //successes,
-            xdr.onload = () => {
-                callback(new HttpResponse(HttpResponseStatus.success, getHeader, 200, xdr.responseText));
+            this.xdr.onload = () => {
+                this.callback(new HttpResponse(HttpResponseStatus.success, getHeader, 200, this.xdr.responseText));
             };
 
             //and even more stupidity (because XDR REALLY sucks).
-            xdr.onprogress = () => null;
+            this.xdr.onprogress = () => null;
 
             //Finally, open the request
-            xdr.open(HttpMethod[method], request.ToString());
+            this.xdr.open(HttpMethod[this.method], this.request.ToString());
 
             //and either send
-            if (method == HttpMethod.GET) {
+            if (this.method == HttpMethod.GET) {
                 //a get request without data,
-                xdr.send();
+                this.xdr.send();
                 return;
             }
 
             //or send the post-data to the server (as text/plain, because XDR sucks)
-            xdr.send(HttpUrl.UrlEncodeObject(postData));
+            this.xdr.send(HttpUrl.UrlEncodeObject(this.postData));
+        }
+
+        Destroy():void {
+            this.xdr.ontimeout = this.xdr.onerror = this.xdr.onload = this.xdr.onprogress = null;
+            this.xdr = null;
         }
     }
 }

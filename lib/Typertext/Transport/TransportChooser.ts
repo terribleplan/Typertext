@@ -1,3 +1,7 @@
+/**
+ * @namespace   Typertext
+ * @module      Transport
+ */
 module Typertext.Transport {
     import HttpMethod = Typertext.Http.HttpMethod;
     import HttpUrl = Typertext.Http.HttpUrl
@@ -13,7 +17,7 @@ module Typertext.Transport {
          * @param   {HttpResponseHandler}   callback
          * @returns {GenericTransport}
          */
-        static Transport(method:HttpMethod, request:HttpUrl, postData:HttpPostData, callback:HttpResponseHandler):GenericTransport {
+        static Transport(method:HttpMethod, request:HttpUrl, postData:HttpPostData, callback:HttpResponseHandler):TransportConstructor {
             //Prepare to test if we are in IE
             var ieTestDiv = document.createElement("div");
             ieTestDiv.innerHTML = "<!--[if lte IE 7]><i></i><![endif]-->";
@@ -31,13 +35,13 @@ module Typertext.Transport {
             //If this is a CORS request in a modern browser
             if (!origin.CrossOriginCheck(origin) || !ieLte9) {
                 //Just use a standard XHR request
-                return new XHR(method, request, postData, callback);
+                return XHR;
             }
 
             //Otherwise if we aren't cross protocol
             if (origin.GetProtocol() === request.GetProtocol()) {
                 //Use IE's silly XDomainRequest
-                return new XDR(method, request, postData, callback);
+                return XDR;
             }
 
             //Otherwise there is no supported transport

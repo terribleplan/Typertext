@@ -1,3 +1,5 @@
+
+
 //TODO add support for IE8-9 CORS via XDomain
 //TODO better error handling, ala exceptions
 
@@ -6,6 +8,10 @@
  * @module      Http
  */
 module Typertext.Http {
+    import GenericTransport = Typertext.Transport.GenericTransport;
+    import TransportChooser = Typertext.Transport.TransportChooser;
+    import TransportConstructor = Typertext.Transport.TransportConstructor;
+
     export class HttpRequest implements Typertext.GenericRequest<HttpResponseHandler> {
         /**
          * The class that everything that calls an http(s) server should use and build on top of using callbacks
@@ -49,10 +55,18 @@ module Typertext.Http {
          * @param   {HttpUrl}               request
          * @param   {HttpPostData}          postData
          * @param   {HttpResponseHandler}   callback
+         * @param   {GenericTransport}      transport
          */
-        public RawRequest(method:HttpMethod, request:HttpUrl, postData:HttpPostData = {}, callback:HttpResponseHandler = (c)=> {
-        }):void {
-            Typertext.Transport.TransportChooser.Transport(method, request, postData, callback);
+        public RawRequest(method:HttpMethod, request:HttpUrl, postData:HttpPostData = {}, callback?:HttpResponseHandler, transport?:TransportConstructor):void {
+            if (!callback)
+                callback = (c)=> null;
+
+            if (!transport)
+                transport = TransportChooser.Transport(method, request, postData, callback);
+
+            //This is guaranteed to return a GenericTransport, but PhpStorm isn't so sure
+            var transportInstance:GenericTransport = <GenericTransport> new transport(method, request, postData, callback);
+            transportInstance.Send();
         }
     }
 }

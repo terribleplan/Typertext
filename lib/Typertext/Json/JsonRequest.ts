@@ -9,6 +9,7 @@ module Typertext.Json {
     import HttpUrl = Typertext.Http.HttpUrl;
     import HttpPostData = Typertext.Http.HttpPostData;
     import HttpMethod = Typertext.Http.HttpMethod;
+    import TransportConstructor = Typertext.Transport.TransportConstructor;
 
     export class JsonRequest implements Typertext.GenericRequest<JsonResponseHandler> {
         private jsonType:string;
@@ -62,8 +63,9 @@ module Typertext.Json {
          * @param   {HttpUrl}               request
          * @param   {HttpPostData}          postData
          * @param   {JsonResponseHandler}   callback
+         * @param   {TransportConstructor}  transport
          */
-        public RawRequest(method:HttpMethod, request:HttpUrl, postData:Typertext.Http.HttpPostData = {}, callback?:JsonResponseHandler) {
+        public RawRequest(method:HttpMethod, request:HttpUrl, postData:Typertext.Http.HttpPostData = {}, callback?:JsonResponseHandler, transport?:TransportConstructor) {
             //Ensure we have an executable callback
             if (typeof callback != "function") {
                 //Make a request and ignore the response, throwing exceptions in async code can be weird
@@ -82,7 +84,7 @@ module Typertext.Json {
 
                 //If it is then we can just pass it straight through to the JSON response
                 callback(JsonResponse.fromHttpResponse(response));
-            });
+            }, transport);
         }
     }
 }

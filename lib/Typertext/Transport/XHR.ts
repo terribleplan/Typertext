@@ -6,59 +6,76 @@ module Typertext.Transport {
     import HttpResponseStatus = Typertext.Http.HttpResponseStatus;
     import HttpResponse = Typertext.Http.HttpResponse;
 
-    export class XHR extends GenericTransport {
+    export class XHR implements GenericTransport {
+        private xhr:XMLHttpRequest;
+        private postData: HttpPostData;
+        private method:HttpMethod;
+        private request:HttpUrl;
+        private callback:HttpResponseHandler;
+
         constructor(method:HttpMethod, request:HttpUrl, postData:HttpPostData = {}, callback:HttpResponseHandler = (c)=> null) {
-            super(method, request, postData, callback);
+            //Store the request information
+            this.postData = postData;
+            this.method = method;
+            this.request = request;
+            this.callback = callback;
 
             //Create a XHR
-            var xhr = new XMLHttpRequest();
+            this.xhr = new XMLHttpRequest();
 
             //And let us know when it does something
-            xhr.onreadystatechange = ()=> {
+            this.xhr.onreadystatechange = ()=> {
                 //If the request is complete
-                if (xhr.readyState == 4) {
+                if (this.xhr.readyState == 4) {
                     //Prepare a getter for the header
                     var getHeader = (name:string):string => {
-                        return xhr.getResponseHeader(name);
+                        return this.xhr.getResponseHeader(name);
                     };
 
                     //Check the status
-                    if (xhr.status == 200) {
+                    if (this.xhr.status == 200) {
                         //And either succeed
-                        callback(new HttpResponse(HttpResponseStatus.success, getHeader, xhr.status, xhr.responseText));
-                    } else if (xhr.status >= 400 && xhr.status < 500) {
+                        this.callback(new HttpResponse(HttpResponseStatus.success, getHeader, this.xhr.status, this.xhr.responseText));
+                    } else if (this.xhr.status >= 400 && this.xhr.status < 500) {
                         //Or fail miserably
-                        callback(new HttpResponse(HttpResponseStatus.clientError, getHeader, xhr.status, xhr.responseText));
-                    } else if (xhr.status >= 500 && xhr.status < 600) {
+                        this.callback(new HttpResponse(HttpResponseStatus.clientError, getHeader, this.xhr.status, this.xhr.responseText));
+                    } else if (this.xhr.status >= 500 && this.xhr.status < 600) {
                         //Again
-                        callback(new HttpResponse(HttpResponseStatus.serverError, getHeader, xhr.status, xhr.responseText));
+                        this.callback(new HttpResponse(HttpResponseStatus.serverError, getHeader, this.xhr.status, this.xhr.responseText));
                     } else {
                         //And again
-                        callback(new HttpResponse(HttpResponseStatus.unknownError, getHeader, xhr.status, xhr.responseText));
+                        this.callback(new HttpResponse(HttpResponseStatus.unknownError, getHeader, this.xhr.status, this.xhr.responseText));
                     }
                 }
             };
 
             //Or if it times out
-            xhr.ontimeout = () => {
+            this.xhr.ontimeout = () => {
                 //And make a big deal of the failing
-                callback(new HttpResponse(HttpResponseStatus.timeout, (i:string)=>"", -1, ""));
+                this.callback(new HttpResponse(HttpResponseStatus.timeout, (i:string)=>"", -1, ""));
             };
+        }
 
+        public Send() {
             //Now connect
-            xhr.open(HttpMethod[method], request.ToString(), true);
+            this.xhr.open(HttpMethod[this.method], this.request.ToString(), true);
 
             //And either send
-            if (method == HttpMethod.GET) {
+            if (this.method == HttpMethod.GET) {
                 //A get request
-                xhr.send();
+                this.xhr.send();
                 return;
             }
 
             //Or set the content-type
-            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            this.xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             //And send the post-data to the server
-            xhr.send(HttpUrl.UrlEncodeObject(postData));
+            this.xhr.send(HttpUrl.UrlEncodeObject(this.postData));
+        }
+
+        public Destroy():void {
+            this.xhr.onreadystatechange = this.xhr.ontimeout = null;
+            this.xhr = null;
         }
     }
 }

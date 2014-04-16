@@ -23,6 +23,12 @@ var Typertext;
 })(Typertext || (Typertext = {}));
 var Typertext;
 (function (Typertext) {
+    (function (Transport) {
+    })(Typertext.Transport || (Typertext.Transport = {}));
+    var Transport = Typertext.Transport;
+})(Typertext || (Typertext = {}));
+var Typertext;
+(function (Typertext) {
     
 })(Typertext || (Typertext = {}));
 var Typertext;
@@ -102,6 +108,8 @@ var Typertext;
 var Typertext;
 (function (Typertext) {
     (function (Http) {
+        var TransportChooser = Typertext.Transport.TransportChooser;
+
         var HttpRequest = (function () {
             function HttpRequest() {
             }
@@ -113,11 +121,18 @@ var Typertext;
                 this.RawRequest(1 /* POST */, request, postData, callback);
             };
 
-            HttpRequest.prototype.RawRequest = function (method, request, postData, callback) {
+            HttpRequest.prototype.RawRequest = function (method, request, postData, callback, transport) {
                 if (typeof postData === "undefined") { postData = {}; }
-                if (typeof callback === "undefined") { callback = function (c) {
-                }; }
-                Typertext.Transport.TransportChooser.Transport(method, request, postData, callback);
+                if (!callback)
+                    callback = function (c) {
+                        return null;
+                    };
+
+                if (!transport)
+                    transport = TransportChooser.Transport(method, request, postData, callback);
+
+                var transportInstance = new transport(method, request, postData, callback);
+                transportInstance.Send();
             };
             return HttpRequest;
         })();
@@ -310,7 +325,7 @@ var Typertext;
                 this.RawRequest(1 /* POST */, request, postData, callback);
             };
 
-            JsonRequest.prototype.RawRequest = function (method, request, postData, callback) {
+            JsonRequest.prototype.RawRequest = function (method, request, postData, callback, transport) {
                 var _this = this;
                 if (typeof postData === "undefined") { postData = {}; }
                 if (typeof callback != "function") {
@@ -326,7 +341,7 @@ var Typertext;
                     }
 
                     callback(Typertext.Json.JsonResponse.fromHttpResponse(response));
-                });
+                }, transport);
             };
             return JsonRequest;
         })();
@@ -370,18 +385,6 @@ var Typertext;
 var Typertext;
 (function (Typertext) {
     (function (Transport) {
-        var GenericTransport = (function () {
-            function GenericTransport(method, request, postData, callback) {
-            }
-            return GenericTransport;
-        })();
-        Transport.GenericTransport = GenericTransport;
-    })(Typertext.Transport || (Typertext.Transport = {}));
-    var Transport = Typertext.Transport;
-})(Typertext || (Typertext = {}));
-var Typertext;
-(function (Typertext) {
-    (function (Transport) {
         var HttpUrl = Typertext.Http.HttpUrl;
 
         var TransportChooser = (function () {
@@ -400,11 +403,11 @@ var Typertext;
                 var origin = HttpUrl.FromUrl(window.location.href);
 
                 if (!origin.CrossOriginCheck(origin) || !ieLte9) {
-                    return new Typertext.Transport.XHR(method, request, postData, callback);
+                    return Typertext.Transport.XHR;
                 }
 
                 if (origin.GetProtocol() === request.GetProtocol()) {
-                    return new Typertext.Transport.XDR(method, request, postData, callback);
+                    return Typertext.Transport.XDR;
                 }
 
                 throw {};
@@ -424,53 +427,62 @@ var Typertext;
         var HttpResponseStatus = Typertext.Http.HttpResponseStatus;
         var HttpResponse = Typertext.Http.HttpResponse;
 
-        var XDR = (function (_super) {
-            __extends(XDR, _super);
+        var XDR = (function () {
             function XDR(method, request, postData, callback) {
                 if (typeof postData === "undefined") { postData = {}; }
                 if (typeof callback === "undefined") { callback = function (c) {
                     return null;
                 }; }
-                _super.call(this, method, request, postData, callback);
+                this.postData = postData;
+                this.method = method;
+                this.request = request;
+                this.callback = callback;
 
-                var xdr = new XDomainRequest();
-
+                this.xdr = new XDomainRequest();
+            }
+            XDR.prototype.Send = function () {
+                var _this = this;
                 var getHeader = function (name) {
                     if (name.toLowerCase() === "content-type") {
-                        return xdr.contentType;
+                        return _this.xdr.contentType;
                     }
                     return undefined;
                 };
 
-                xdr.ontimeout = function () {
-                    callback(new HttpResponse(5 /* timeout */, function (i) {
+                this.xdr.ontimeout = function () {
+                    _this.callback(new HttpResponse(5 /* timeout */, function (i) {
                         return "";
                     }, -1, ""));
                 };
 
-                xdr.onerror = function () {
-                    callback(new HttpResponse(4 /* unknownError */, getHeader, -1, xdr.responseText));
+                this.xdr.onerror = function () {
+                    _this.callback(new HttpResponse(4 /* unknownError */, getHeader, -1, _this.xdr.responseText));
                 };
 
-                xdr.onload = function () {
-                    callback(new HttpResponse(0 /* success */, getHeader, 200, xdr.responseText));
+                this.xdr.onload = function () {
+                    _this.callback(new HttpResponse(0 /* success */, getHeader, 200, _this.xdr.responseText));
                 };
 
-                xdr.onprogress = function () {
+                this.xdr.onprogress = function () {
                     return null;
                 };
 
-                xdr.open(HttpMethod[method], request.ToString());
+                this.xdr.open(HttpMethod[this.method], this.request.ToString());
 
-                if (method == 0 /* GET */) {
-                    xdr.send();
+                if (this.method == 0 /* GET */) {
+                    this.xdr.send();
                     return;
                 }
 
-                xdr.send(HttpUrl.UrlEncodeObject(postData));
-            }
+                this.xdr.send(HttpUrl.UrlEncodeObject(this.postData));
+            };
+
+            XDR.prototype.Destroy = function () {
+                this.xdr.ontimeout = this.xdr.onerror = this.xdr.onload = this.xdr.onprogress = null;
+                this.xdr = null;
+            };
             return XDR;
-        })(Typertext.Transport.GenericTransport);
+        })();
         Transport.XDR = XDR;
     })(Typertext.Transport || (Typertext.Transport = {}));
     var Transport = Typertext.Transport;
@@ -484,54 +496,63 @@ var Typertext;
         var HttpResponseStatus = Typertext.Http.HttpResponseStatus;
         var HttpResponse = Typertext.Http.HttpResponse;
 
-        var XHR = (function (_super) {
-            __extends(XHR, _super);
+        var XHR = (function () {
             function XHR(method, request, postData, callback) {
                 if (typeof postData === "undefined") { postData = {}; }
                 if (typeof callback === "undefined") { callback = function (c) {
                     return null;
                 }; }
-                _super.call(this, method, request, postData, callback);
+                var _this = this;
+                this.postData = postData;
+                this.method = method;
+                this.request = request;
+                this.callback = callback;
 
-                var xhr = new XMLHttpRequest();
+                this.xhr = new XMLHttpRequest();
 
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState == 4) {
+                this.xhr.onreadystatechange = function () {
+                    if (_this.xhr.readyState == 4) {
                         var getHeader = function (name) {
-                            return xhr.getResponseHeader(name);
+                            return _this.xhr.getResponseHeader(name);
                         };
 
-                        if (xhr.status == 200) {
-                            callback(new HttpResponse(0 /* success */, getHeader, xhr.status, xhr.responseText));
-                        } else if (xhr.status >= 400 && xhr.status < 500) {
-                            callback(new HttpResponse(2 /* clientError */, getHeader, xhr.status, xhr.responseText));
-                        } else if (xhr.status >= 500 && xhr.status < 600) {
-                            callback(new HttpResponse(1 /* serverError */, getHeader, xhr.status, xhr.responseText));
+                        if (_this.xhr.status == 200) {
+                            _this.callback(new HttpResponse(0 /* success */, getHeader, _this.xhr.status, _this.xhr.responseText));
+                        } else if (_this.xhr.status >= 400 && _this.xhr.status < 500) {
+                            _this.callback(new HttpResponse(2 /* clientError */, getHeader, _this.xhr.status, _this.xhr.responseText));
+                        } else if (_this.xhr.status >= 500 && _this.xhr.status < 600) {
+                            _this.callback(new HttpResponse(1 /* serverError */, getHeader, _this.xhr.status, _this.xhr.responseText));
                         } else {
-                            callback(new HttpResponse(4 /* unknownError */, getHeader, xhr.status, xhr.responseText));
+                            _this.callback(new HttpResponse(4 /* unknownError */, getHeader, _this.xhr.status, _this.xhr.responseText));
                         }
                     }
                 };
 
-                xhr.ontimeout = function () {
-                    callback(new HttpResponse(5 /* timeout */, function (i) {
+                this.xhr.ontimeout = function () {
+                    _this.callback(new HttpResponse(5 /* timeout */, function (i) {
                         return "";
                     }, -1, ""));
                 };
+            }
+            XHR.prototype.Send = function () {
+                this.xhr.open(HttpMethod[this.method], this.request.ToString(), true);
 
-                xhr.open(HttpMethod[method], request.ToString(), true);
-
-                if (method == 0 /* GET */) {
-                    xhr.send();
+                if (this.method == 0 /* GET */) {
+                    this.xhr.send();
                     return;
                 }
 
-                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                this.xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-                xhr.send(HttpUrl.UrlEncodeObject(postData));
-            }
+                this.xhr.send(HttpUrl.UrlEncodeObject(this.postData));
+            };
+
+            XHR.prototype.Destroy = function () {
+                this.xhr.onreadystatechange = this.xhr.ontimeout = null;
+                this.xhr = null;
+            };
             return XHR;
-        })(Typertext.Transport.GenericTransport);
+        })();
         Transport.XHR = XHR;
     })(Typertext.Transport || (Typertext.Transport = {}));
     var Transport = Typertext.Transport;
