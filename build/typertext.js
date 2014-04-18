@@ -191,6 +191,9 @@ var Typertext;
             HttpUrl.FromUrl = function (location) {
                 var l = document.createElement("a");
                 l.href = location;
+                if (!l.hostname || !l.protocol || !l.pathname || !l.search || !l.port) {
+                    l.href = l.href;
+                }
                 return new HttpUrl(l.hostname, Typertext.Http.HttpProtocol[l.protocol.slice(0, -1)], l.pathname, HttpUrl.DecodeQueryString(l.search), parseInt(l.port));
             };
 

@@ -35,6 +35,11 @@ module Typertext.Http {
         public static FromUrl(location:string):HttpUrl {
             var l = document.createElement("a");
             l.href = location;
+            if (!l.hostname || !l.protocol || !l.pathname || !l.search || !l.port) {
+                //This may seem silly, but it is serious business for IE and relative URLs
+                //noinspection SillyAssignmentJS
+                l.href = l.href;
+            }
             return new HttpUrl(l.hostname, HttpProtocol[l.protocol.slice(0,-1)], l.pathname, HttpUrl.DecodeQueryString(l.search), parseInt(l.port))
         }
 
