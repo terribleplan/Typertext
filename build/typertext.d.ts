@@ -112,7 +112,7 @@ declare module Typertext.Http {
         public GetPort(): number;
         public GetDomain(): string;
         public GetProtocol(): HttpProtocol;
-        public CrossOriginCheck(url: HttpUrl): boolean;
+        public SameOriginCheck(url: HttpUrl): boolean;
     }
 }
 declare module Typertext.Json {
