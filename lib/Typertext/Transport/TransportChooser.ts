@@ -32,8 +32,8 @@ module Typertext.Transport {
             var ieLte9 = (ieTestDiv.getElementsByTagName("i").length === 1);
             var origin = HttpUrl.FromUrl(window.location.href);
 
-            //If this is a CORS request in a modern browser
-            if (!origin.CrossOriginCheck(origin) || !ieLte9) {
+            //If this is a standard request, or a CORS request in a modern browser
+            if (origin.SameOriginCheck(origin) || !ieLte9) {
                 //Just use a standard XHR request
                 return XHR;
             }
