@@ -266,7 +266,7 @@ var Typertext;
                 return this.protocol;
             };
 
-            HttpUrl.prototype.CrossOriginCheck = function (url) {
+            HttpUrl.prototype.SameOriginCheck = function (url) {
                 return (this.domain === url.GetDomain() && this.port === url.GetPort() && this.protocol === url.GetProtocol());
             };
             return HttpUrl;
@@ -399,7 +399,7 @@ var Typertext;
                 var ieLte9 = (ieTestDiv.getElementsByTagName("i").length === 1);
                 var origin = HttpUrl.FromUrl(window.location.href);
 
-                if (!origin.CrossOriginCheck(origin) || !ieLte9) {
+                if (origin.SameOriginCheck(origin) || !ieLte9) {
                     return new Typertext.Transport.XHR(method, request, postData, callback);
                 }
 

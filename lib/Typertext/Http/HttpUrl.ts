@@ -199,7 +199,7 @@ module Typertext.Http {
          *
          * @returns {boolean}
          */
-        public CrossOriginCheck(url:HttpUrl):boolean {
+        public SameOriginCheck(url:HttpUrl):boolean {
             return (this.domain === url.GetDomain() && this.port === url.GetPort() && this.protocol === url.GetProtocol());
         }
     }
