@@ -7,7 +7,12 @@ module Typertext.Http {
      * TODO figure out the proper annotations for enums
      */
     export enum HttpMethod {
+        DELETE,
         GET,
-        POST
+        HEAD,
+        OPTIONS,
+        POST,
+        PUT,
+        TRACE
     }
 }
