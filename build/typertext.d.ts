@@ -9,20 +9,6 @@ declare module Typertext {
         public GetCustom(): T;
     }
 }
-declare module Typertext.Transport {
-    interface TransportConstructor {
-        new(method: Http.HttpMethod, request: Http.HttpUrl, postData?: Http.HttpPostData, callback?: Http.HttpResponseHandler): GenericTransport;
-    }
-}
-declare module Typertext {
-    interface GenericRequest<T extends GenericResponseHandler<GenericResponse<any>>> {
-        Delete(request: Http.HttpUrl, callback: T): void;
-        Get(request: Http.HttpUrl, callback: T): void;
-        Post(request: Http.HttpUrl, postData: Http.HttpPostData, callback: T): void;
-        Put(request: Http.HttpUrl, putData: Http.HttpPostData, callback: T): void;
-        RawRequest(method: Http.HttpMethod, request: Http.HttpUrl, postData?: Http.HttpPostData, callback?: T, transport?: Transport.TransportConstructor): void;
-    }
-}
 declare module Typertext {
     class GenericResponse<T> {
         private status;
@@ -43,10 +29,6 @@ declare module Typertext {
     }
 }
 declare module Typertext.Http {
-    class HttpException extends BaseException<HttpResponse> {
-    }
-}
-declare module Typertext.Http {
     enum HttpMethod {
         DELETE = 0,
         GET = 1,
@@ -63,6 +45,46 @@ declare module Typertext.Http {
     }
 }
 declare module Typertext.Http {
+    class HttpUrl {
+        private domain;
+        private path;
+        private port;
+        private protocol;
+        private queryString;
+        static DefaultPort(protocol: HttpProtocol): number;
+        static FromUrl(location: string): HttpUrl;
+        static DecodeQueryString(queryString: string): HttpQueryString;
+        static EncodeQueryString(query: HttpQueryString): string;
+        static UrlEncodeObject(data: HttpQueryString): string;
+        static UrlDecodeString(queryString: string): HttpQueryString;
+        private static splitString(input, separator, limit?);
+        constructor(domain: string, protocol?: HttpProtocol, path?: string, queryString?: HttpQueryString, port?: number);
+        public ToString(): string;
+        public GetPort(): number;
+        public GetDomain(): string;
+        public GetProtocol(): HttpProtocol;
+        public SameOriginCheck(url: HttpUrl): boolean;
+    }
+}
+declare module Typertext.Transport {
+    interface TransportConstructor {
+        new(method: Http.HttpMethod, request: Http.HttpUrl, postData?: Http.HttpPostData, callback?: Http.HttpResponseHandler): GenericTransport;
+    }
+}
+declare module Typertext {
+    interface GenericRequest<T extends GenericResponseHandler<GenericResponse<any>>> {
+        Delete(request: Http.HttpUrl, callback: T): void;
+        Get(request: Http.HttpUrl, callback: T): void;
+        Post(request: Http.HttpUrl, postData: Http.HttpPostData, callback: T): void;
+        Put(request: Http.HttpUrl, putData: Http.HttpPostData, callback: T): void;
+        RawRequest(method: Http.HttpMethod, request: Http.HttpUrl, postData?: Http.HttpPostData, callback?: T, transport?: Transport.TransportConstructor): void;
+    }
+}
+declare module Typertext.Http {
+    class HttpException extends BaseException<HttpResponse> {
+    }
+}
+declare module Typertext.Http {
     enum HttpProtocol {
         http = 0,
         https = 1,
@@ -71,6 +93,17 @@ declare module Typertext.Http {
 declare module Typertext.Http {
     interface HttpQueryString {
         [index: string]: string;
+    }
+}
+declare module Typertext.Transport {
+    interface GenericTransport {
+        Send(): void;
+        Destroy(): void;
+    }
+}
+declare module Typertext.Transport {
+    class TransportChooser {
+        static Transport(method: Http.HttpMethod, request: Http.HttpUrl, postData: Http.HttpPostData, callback: Http.HttpResponseHandler): TransportConstructor;
     }
 }
 declare module Typertext.Http {
@@ -100,28 +133,6 @@ declare module Typertext.Http {
         responseError = 3,
         unknownError = 4,
         timeout = 5,
-    }
-}
-declare module Typertext.Http {
-    class HttpUrl {
-        private domain;
-        private path;
-        private port;
-        private protocol;
-        private queryString;
-        static DefaultPort(protocol: HttpProtocol): number;
-        static FromUrl(location: string): HttpUrl;
-        static DecodeQueryString(queryString: string): HttpQueryString;
-        static EncodeQueryString(query: HttpQueryString): string;
-        static UrlEncodeObject(data: HttpQueryString): string;
-        static UrlDecodeString(queryString: string): HttpQueryString;
-        private static splitString(input, separator, limit?);
-        constructor(domain: string, protocol?: HttpProtocol, path?: string, queryString?: HttpQueryString, port?: number);
-        public ToString(): string;
-        public GetPort(): number;
-        public GetDomain(): string;
-        public GetProtocol(): HttpProtocol;
-        public SameOriginCheck(url: HttpUrl): boolean;
     }
 }
 declare module Typertext.Json {
@@ -157,17 +168,6 @@ declare module Typertext.Json {
 }
 declare module Typertext.Json {
     interface JsonResponseHandler extends GenericResponseHandler<JsonResponse> {
-    }
-}
-declare module Typertext.Transport {
-    interface GenericTransport {
-        Send(): void;
-        Destroy(): void;
-    }
-}
-declare module Typertext.Transport {
-    class TransportChooser {
-        static Transport(method: Http.HttpMethod, request: Http.HttpUrl, postData: Http.HttpPostData, callback: Http.HttpResponseHandler): TransportConstructor;
     }
 }
 declare module Typertext.Transport {

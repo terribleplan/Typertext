@@ -23,16 +23,6 @@ var Typertext;
 })(Typertext || (Typertext = {}));
 var Typertext;
 (function (Typertext) {
-    (function (Transport) {
-    })(Typertext.Transport || (Typertext.Transport = {}));
-    var Transport = Typertext.Transport;
-})(Typertext || (Typertext = {}));
-var Typertext;
-(function (Typertext) {
-    
-})(Typertext || (Typertext = {}));
-var Typertext;
-(function (Typertext) {
     var GenericResponse = (function () {
         function GenericResponse(status, responseHeaderGetter, httpResponseCode, responseBody) {
             this.status = status;
@@ -63,26 +53,6 @@ var Typertext;
     })();
     Typertext.GenericResponse = GenericResponse;
 })(Typertext || (Typertext = {}));
-var __extends = this.__extends || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
-var Typertext;
-(function (Typertext) {
-    (function (Http) {
-        var HttpException = (function (_super) {
-            __extends(HttpException, _super);
-            function HttpException() {
-                _super.apply(this, arguments);
-            }
-            return HttpException;
-        })(Typertext.BaseException);
-        Http.HttpException = HttpException;
-    })(Typertext.Http || (Typertext.Http = {}));
-    var Http = Typertext.Http;
-})(Typertext || (Typertext = {}));
 var Typertext;
 (function (Typertext) {
     (function (Http) {
@@ -96,89 +66,6 @@ var Typertext;
             HttpMethod[HttpMethod["TRACE"] = 6] = "TRACE";
         })(Http.HttpMethod || (Http.HttpMethod = {}));
         var HttpMethod = Http.HttpMethod;
-    })(Typertext.Http || (Typertext.Http = {}));
-    var Http = Typertext.Http;
-})(Typertext || (Typertext = {}));
-var Typertext;
-(function (Typertext) {
-    (function (Http) {
-        (function (HttpProtocol) {
-            HttpProtocol[HttpProtocol["http"] = 0] = "http";
-            HttpProtocol[HttpProtocol["https"] = 1] = "https";
-        })(Http.HttpProtocol || (Http.HttpProtocol = {}));
-        var HttpProtocol = Http.HttpProtocol;
-    })(Typertext.Http || (Typertext.Http = {}));
-    var Http = Typertext.Http;
-})(Typertext || (Typertext = {}));
-var Typertext;
-(function (Typertext) {
-    (function (Http) {
-        var TransportChooser = Typertext.Transport.TransportChooser;
-
-        var HttpRequest = (function () {
-            function HttpRequest() {
-            }
-            HttpRequest.prototype.Delete = function (request, callback) {
-                this.RawRequest(5 /* PUT */, request, {}, callback);
-            };
-
-            HttpRequest.prototype.Get = function (request, callback) {
-                this.RawRequest(1 /* GET */, request, {}, callback);
-            };
-
-            HttpRequest.prototype.Post = function (request, postData, callback) {
-                this.RawRequest(4 /* POST */, request, postData, callback);
-            };
-
-            HttpRequest.prototype.Put = function (request, putData, callback) {
-                this.RawRequest(5 /* PUT */, request, putData, callback);
-            };
-
-            HttpRequest.prototype.RawRequest = function (method, request, postData, callback, transport) {
-                if (typeof postData === "undefined") { postData = {}; }
-                if (!callback)
-                    callback = function (c) {
-                        return null;
-                    };
-
-                if (!transport)
-                    transport = TransportChooser.Transport(method, request, postData, callback);
-
-                var transportInstance = new transport(method, request, postData, callback);
-                transportInstance.Send();
-            };
-            return HttpRequest;
-        })();
-        Http.HttpRequest = HttpRequest;
-    })(Typertext.Http || (Typertext.Http = {}));
-    var Http = Typertext.Http;
-})(Typertext || (Typertext = {}));
-var Typertext;
-(function (Typertext) {
-    (function (Http) {
-        var HttpResponse = (function (_super) {
-            __extends(HttpResponse, _super);
-            function HttpResponse(status, responseHeaderGetter, httpResponseCode, responseBody) {
-                _super.call(this, status, responseHeaderGetter, httpResponseCode, responseBody);
-            }
-            return HttpResponse;
-        })(Typertext.GenericResponse);
-        Http.HttpResponse = HttpResponse;
-    })(Typertext.Http || (Typertext.Http = {}));
-    var Http = Typertext.Http;
-})(Typertext || (Typertext = {}));
-var Typertext;
-(function (Typertext) {
-    (function (Http) {
-        (function (HttpResponseStatus) {
-            HttpResponseStatus[HttpResponseStatus["success"] = 0] = "success";
-            HttpResponseStatus[HttpResponseStatus["serverError"] = 1] = "serverError";
-            HttpResponseStatus[HttpResponseStatus["clientError"] = 2] = "clientError";
-            HttpResponseStatus[HttpResponseStatus["responseError"] = 3] = "responseError";
-            HttpResponseStatus[HttpResponseStatus["unknownError"] = 4] = "unknownError";
-            HttpResponseStatus[HttpResponseStatus["timeout"] = 5] = "timeout";
-        })(Http.HttpResponseStatus || (Http.HttpResponseStatus = {}));
-        var HttpResponseStatus = Http.HttpResponseStatus;
     })(Typertext.Http || (Typertext.Http = {}));
     var Http = Typertext.Http;
 })(Typertext || (Typertext = {}));
@@ -308,6 +195,155 @@ var Typertext;
 })(Typertext || (Typertext = {}));
 var Typertext;
 (function (Typertext) {
+    (function (Transport) {
+    })(Typertext.Transport || (Typertext.Transport = {}));
+    var Transport = Typertext.Transport;
+})(Typertext || (Typertext = {}));
+var Typertext;
+(function (Typertext) {
+    
+})(Typertext || (Typertext = {}));
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+var Typertext;
+(function (Typertext) {
+    (function (Http) {
+        var HttpException = (function (_super) {
+            __extends(HttpException, _super);
+            function HttpException() {
+                _super.apply(this, arguments);
+            }
+            return HttpException;
+        })(Typertext.BaseException);
+        Http.HttpException = HttpException;
+    })(Typertext.Http || (Typertext.Http = {}));
+    var Http = Typertext.Http;
+})(Typertext || (Typertext = {}));
+var Typertext;
+(function (Typertext) {
+    (function (Http) {
+        (function (HttpProtocol) {
+            HttpProtocol[HttpProtocol["http"] = 0] = "http";
+            HttpProtocol[HttpProtocol["https"] = 1] = "https";
+        })(Http.HttpProtocol || (Http.HttpProtocol = {}));
+        var HttpProtocol = Http.HttpProtocol;
+    })(Typertext.Http || (Typertext.Http = {}));
+    var Http = Typertext.Http;
+})(Typertext || (Typertext = {}));
+var Typertext;
+(function (Typertext) {
+    (function (Transport) {
+        var HttpUrl = Typertext.Http.HttpUrl;
+
+        var TransportChooser = (function () {
+            function TransportChooser() {
+            }
+            TransportChooser.Transport = function (method, request, postData, callback) {
+                var ieTestDiv = document.createElement("div");
+                ieTestDiv.innerHTML = "<!--[if lte IE 7]><i></i><![endif]-->";
+
+                if (ieTestDiv.getElementsByTagName("i").length === 1) {
+                    throw {};
+                }
+
+                ieTestDiv.innerHTML = "<!--[if lte IE 9]><i></i><![endif]-->";
+                var ieLte9 = (ieTestDiv.getElementsByTagName("i").length === 1);
+                var origin = HttpUrl.FromUrl(window.location.href);
+
+                if (origin.SameOriginCheck(origin) || !ieLte9) {
+                    return Typertext.Transport.XHR;
+                }
+
+                if (origin.GetProtocol() === request.GetProtocol()) {
+                    return Typertext.Transport.XDR;
+                }
+
+                throw {};
+            };
+            return TransportChooser;
+        })();
+        Transport.TransportChooser = TransportChooser;
+    })(Typertext.Transport || (Typertext.Transport = {}));
+    var Transport = Typertext.Transport;
+})(Typertext || (Typertext = {}));
+var Typertext;
+(function (Typertext) {
+    (function (Http) {
+        var TransportChooser = Typertext.Transport.TransportChooser;
+
+        var HttpRequest = (function () {
+            function HttpRequest() {
+            }
+            HttpRequest.prototype.Delete = function (request, callback) {
+                this.RawRequest(5 /* PUT */, request, {}, callback);
+            };
+
+            HttpRequest.prototype.Get = function (request, callback) {
+                this.RawRequest(1 /* GET */, request, {}, callback);
+            };
+
+            HttpRequest.prototype.Post = function (request, postData, callback) {
+                this.RawRequest(4 /* POST */, request, postData, callback);
+            };
+
+            HttpRequest.prototype.Put = function (request, putData, callback) {
+                this.RawRequest(5 /* PUT */, request, putData, callback);
+            };
+
+            HttpRequest.prototype.RawRequest = function (method, request, postData, callback, transport) {
+                if (typeof postData === "undefined") { postData = {}; }
+                if (!callback)
+                    callback = function (c) {
+                        return null;
+                    };
+
+                if (!transport)
+                    transport = TransportChooser.Transport(method, request, postData, callback);
+
+                var transportInstance = new transport(method, request, postData, callback);
+                transportInstance.Send();
+            };
+            return HttpRequest;
+        })();
+        Http.HttpRequest = HttpRequest;
+    })(Typertext.Http || (Typertext.Http = {}));
+    var Http = Typertext.Http;
+})(Typertext || (Typertext = {}));
+var Typertext;
+(function (Typertext) {
+    (function (Http) {
+        var HttpResponse = (function (_super) {
+            __extends(HttpResponse, _super);
+            function HttpResponse(status, responseHeaderGetter, httpResponseCode, responseBody) {
+                _super.call(this, status, responseHeaderGetter, httpResponseCode, responseBody);
+            }
+            return HttpResponse;
+        })(Typertext.GenericResponse);
+        Http.HttpResponse = HttpResponse;
+    })(Typertext.Http || (Typertext.Http = {}));
+    var Http = Typertext.Http;
+})(Typertext || (Typertext = {}));
+var Typertext;
+(function (Typertext) {
+    (function (Http) {
+        (function (HttpResponseStatus) {
+            HttpResponseStatus[HttpResponseStatus["success"] = 0] = "success";
+            HttpResponseStatus[HttpResponseStatus["serverError"] = 1] = "serverError";
+            HttpResponseStatus[HttpResponseStatus["clientError"] = 2] = "clientError";
+            HttpResponseStatus[HttpResponseStatus["responseError"] = 3] = "responseError";
+            HttpResponseStatus[HttpResponseStatus["unknownError"] = 4] = "unknownError";
+            HttpResponseStatus[HttpResponseStatus["timeout"] = 5] = "timeout";
+        })(Http.HttpResponseStatus || (Http.HttpResponseStatus = {}));
+        var HttpResponseStatus = Http.HttpResponseStatus;
+    })(Typertext.Http || (Typertext.Http = {}));
+    var Http = Typertext.Http;
+})(Typertext || (Typertext = {}));
+var Typertext;
+(function (Typertext) {
     (function (Json) {
         var JsonException = (function (_super) {
             __extends(JsonException, _super);
@@ -405,42 +441,6 @@ var Typertext;
         Json.JsonResponse = JsonResponse;
     })(Typertext.Json || (Typertext.Json = {}));
     var Json = Typertext.Json;
-})(Typertext || (Typertext = {}));
-var Typertext;
-(function (Typertext) {
-    (function (Transport) {
-        var HttpUrl = Typertext.Http.HttpUrl;
-
-        var TransportChooser = (function () {
-            function TransportChooser() {
-            }
-            TransportChooser.Transport = function (method, request, postData, callback) {
-                var ieTestDiv = document.createElement("div");
-                ieTestDiv.innerHTML = "<!--[if lte IE 7]><i></i><![endif]-->";
-
-                if (ieTestDiv.getElementsByTagName("i").length === 1) {
-                    throw {};
-                }
-
-                ieTestDiv.innerHTML = "<!--[if lte IE 9]><i></i><![endif]-->";
-                var ieLte9 = (ieTestDiv.getElementsByTagName("i").length === 1);
-                var origin = HttpUrl.FromUrl(window.location.href);
-
-                if (origin.SameOriginCheck(origin) || !ieLte9) {
-                    return Typertext.Transport.XHR;
-                }
-
-                if (origin.GetProtocol() === request.GetProtocol()) {
-                    return Typertext.Transport.XDR;
-                }
-
-                throw {};
-            };
-            return TransportChooser;
-        })();
-        Transport.TransportChooser = TransportChooser;
-    })(Typertext.Transport || (Typertext.Transport = {}));
-    var Transport = Typertext.Transport;
 })(Typertext || (Typertext = {}));
 var Typertext;
 (function (Typertext) {
