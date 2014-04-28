@@ -1,3 +1,8 @@
+/// <reference path="GenericResponse.ts" />
+/// <reference path="GenericResponseHandler.ts" />
+/// <reference path="Http/HttpMethod.ts" />
+/// <reference path="Http/HttpPostData.ts" />
+/// <reference path="Http/HttpUrl.ts" />
 /// <reference path="Transport/TransportConstructor.ts" />
 
 /**
@@ -25,6 +30,14 @@ module Typertext {
     export interface GenericRequest<T extends GenericResponseHandler<GenericResponse<any>>> {
 
         /**
+         * A convenience method which will simply use the RawRequest method with a DELETE
+         *
+         * @param   {HttpUrl}                   request
+         * @param   {GenericResponseHandler}    callback
+         */
+        Delete(request:HttpUrl, callback:T):void;
+
+        /**
          * A convenience method which will simply use the RawRequest method with a GET
          *
          * @param   {HttpUrl}                   request
@@ -40,6 +53,15 @@ module Typertext {
          * @param   {GenericResponseHandler}    callback
          */
         Post(request:HttpUrl, postData:HttpPostData, callback:T):void;
+
+        /**
+         * A convenience method which will simply use the RawRequest method with a GET
+         *
+         * @param   {HttpUrl}                   request
+         * @param   {HttpPostData}              putData
+         * @param   {GenericResponseHandler}    callback
+         */
+        Put(request:HttpUrl, putData:HttpPostData, callback:T):void;
 
         /**
          * A method which calls the server and passes returned data to an optionally specified callback

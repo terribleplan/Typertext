@@ -16,8 +16,10 @@ declare module Typertext.Transport {
 }
 declare module Typertext {
     interface GenericRequest<T extends GenericResponseHandler<GenericResponse<any>>> {
+        Delete(request: Http.HttpUrl, callback: T): void;
         Get(request: Http.HttpUrl, callback: T): void;
         Post(request: Http.HttpUrl, postData: Http.HttpPostData, callback: T): void;
+        Put(request: Http.HttpUrl, putData: Http.HttpPostData, callback: T): void;
         RawRequest(method: Http.HttpMethod, request: Http.HttpUrl, postData?: Http.HttpPostData, callback?: T, transport?: Transport.TransportConstructor): void;
     }
 }
@@ -46,8 +48,13 @@ declare module Typertext.Http {
 }
 declare module Typertext.Http {
     enum HttpMethod {
-        GET = 0,
-        POST = 1,
+        DELETE = 0,
+        GET = 1,
+        HEAD = 2,
+        OPTIONS = 3,
+        POST = 4,
+        PUT = 5,
+        TRACE = 6,
     }
 }
 declare module Typertext.Http {
@@ -69,8 +76,10 @@ declare module Typertext.Http {
 declare module Typertext.Http {
     class HttpRequest implements GenericRequest<HttpResponseHandler> {
         constructor();
+        public Delete(request: HttpUrl, callback: HttpResponseHandler): void;
         public Get(request: HttpUrl, callback: HttpResponseHandler): void;
         public Post(request: HttpUrl, postData: HttpPostData, callback: HttpResponseHandler): void;
+        public Put(request: HttpUrl, putData: HttpPostData, callback: HttpResponseHandler): void;
         public RawRequest(method: HttpMethod, request: HttpUrl, postData?: HttpPostData, callback?: HttpResponseHandler, transport?: Transport.TransportConstructor): void;
     }
 }
@@ -130,8 +139,10 @@ declare module Typertext.Json {
         private jsonType;
         private request;
         constructor(jsonContentType?: string);
+        public Delete(request: Http.HttpUrl, callback: JsonResponseHandler): void;
         public Get(request: Http.HttpUrl, callback: JsonResponseHandler): void;
         public Post(request: Http.HttpUrl, postData: Http.HttpPostData, callback: JsonResponseHandler): void;
+        public Put(request: Http.HttpUrl, putData: Http.HttpPostData, callback: JsonResponseHandler): void;
         public RawRequest(method: Http.HttpMethod, request: Http.HttpUrl, postData?: Http.HttpPostData, callback?: JsonResponseHandler, transport?: Transport.TransportConstructor): void;
     }
 }

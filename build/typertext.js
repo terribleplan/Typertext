@@ -87,8 +87,13 @@ var Typertext;
 (function (Typertext) {
     (function (Http) {
         (function (HttpMethod) {
-            HttpMethod[HttpMethod["GET"] = 0] = "GET";
-            HttpMethod[HttpMethod["POST"] = 1] = "POST";
+            HttpMethod[HttpMethod["DELETE"] = 0] = "DELETE";
+            HttpMethod[HttpMethod["GET"] = 1] = "GET";
+            HttpMethod[HttpMethod["HEAD"] = 2] = "HEAD";
+            HttpMethod[HttpMethod["OPTIONS"] = 3] = "OPTIONS";
+            HttpMethod[HttpMethod["POST"] = 4] = "POST";
+            HttpMethod[HttpMethod["PUT"] = 5] = "PUT";
+            HttpMethod[HttpMethod["TRACE"] = 6] = "TRACE";
         })(Http.HttpMethod || (Http.HttpMethod = {}));
         var HttpMethod = Http.HttpMethod;
     })(Typertext.Http || (Typertext.Http = {}));
@@ -113,12 +118,20 @@ var Typertext;
         var HttpRequest = (function () {
             function HttpRequest() {
             }
+            HttpRequest.prototype.Delete = function (request, callback) {
+                this.RawRequest(5 /* PUT */, request, {}, callback);
+            };
+
             HttpRequest.prototype.Get = function (request, callback) {
-                this.RawRequest(0 /* GET */, request, {}, callback);
+                this.RawRequest(1 /* GET */, request, {}, callback);
             };
 
             HttpRequest.prototype.Post = function (request, postData, callback) {
-                this.RawRequest(1 /* POST */, request, postData, callback);
+                this.RawRequest(4 /* POST */, request, postData, callback);
+            };
+
+            HttpRequest.prototype.Put = function (request, putData, callback) {
+                this.RawRequest(5 /* PUT */, request, putData, callback);
             };
 
             HttpRequest.prototype.RawRequest = function (method, request, postData, callback, transport) {
@@ -320,12 +333,20 @@ var Typertext;
                 this.request = new HttpRequest();
                 this.jsonType = jsonContentType;
             }
+            JsonRequest.prototype.Delete = function (request, callback) {
+                this.RawRequest(0 /* DELETE */, request, {}, callback);
+            };
+
             JsonRequest.prototype.Get = function (request, callback) {
-                this.RawRequest(0 /* GET */, request, {}, callback);
+                this.RawRequest(1 /* GET */, request, {}, callback);
             };
 
             JsonRequest.prototype.Post = function (request, postData, callback) {
-                this.RawRequest(1 /* POST */, request, postData, callback);
+                this.RawRequest(4 /* POST */, request, postData, callback);
+            };
+
+            JsonRequest.prototype.Put = function (request, putData, callback) {
+                this.RawRequest(5 /* PUT */, request, putData, callback);
             };
 
             JsonRequest.prototype.RawRequest = function (method, request, postData, callback, transport) {
@@ -472,7 +493,7 @@ var Typertext;
 
                 this.xdr.open(HttpMethod[this.method], this.request.ToString());
 
-                if (this.method == 0 /* GET */) {
+                if (this.method == 1 /* GET */) {
                     this.xdr.send();
                     return;
                 }
@@ -540,7 +561,7 @@ var Typertext;
             XHR.prototype.Send = function () {
                 this.xhr.open(HttpMethod[this.method], this.request.ToString(), true);
 
-                if (this.method == 0 /* GET */) {
+                if (this.method == 1 /* GET */) {
                     this.xhr.send();
                     return;
                 }

@@ -36,6 +36,16 @@ module Typertext.Json {
         }
 
         /**
+         * A convenience method for simply calling a DELETE
+         *
+         * @param   {HttpUrl}               request
+         * @param   {JsonResponseHandler}   callback
+         */
+        public Delete(request:HttpUrl, callback:JsonResponseHandler):void {
+            this.RawRequest(HttpMethod.DELETE, request, {}, callback);
+        }
+
+        /**
          * A convenience method for simply calling a GET
          *
          * @param   {HttpUrl}               request
@@ -54,6 +64,17 @@ module Typertext.Json {
          */
         public Post(request:HttpUrl, postData:HttpPostData, callback:JsonResponseHandler):void {
             this.RawRequest(HttpMethod.POST, request, postData, callback);
+        }
+
+        /**
+         * A convenience method for simply calling a POST
+         *
+         * @param   {HttpUrl}               request
+         * @param   {HttpPutData}          postData
+         * @param   {JsonResponseHandler}   callback
+         */
+        public Put(request:HttpUrl, putData:HttpPostData, callback:JsonResponseHandler):void {
+            this.RawRequest(HttpMethod.PUT, request, putData, callback);
         }
 
         /**

@@ -27,6 +27,16 @@ module Typertext.Http {
         }
 
         /**
+         * A convenience method for simply calling a DELETE
+         *
+         * @param   {HttpUrl}               request
+         * @param   {HttpResponseHandler}   callback
+         */
+        public Delete(request:HttpUrl, callback:HttpResponseHandler):void {
+            this.RawRequest(HttpMethod.PUT, request, {}, callback);
+        }
+
+        /**
          * A convenience method for simply calling a GET
          *
          * @param   {HttpUrl}               request
@@ -45,6 +55,17 @@ module Typertext.Http {
          */
         public Post(request:HttpUrl, postData:HttpPostData, callback:HttpResponseHandler):void {
             this.RawRequest(HttpMethod.POST, request, postData, callback);
+        }
+
+        /**
+         * A convenience method for simply calling a PUT
+         *
+         * @param   {HttpUrl}               request
+         * @param   {HttpPostData}          putData
+         * @param   {HttpResponseHandler}   callback
+         */
+        public Put(request:HttpUrl, putData:HttpPostData, callback:HttpResponseHandler):void {
+            this.RawRequest(HttpMethod.PUT, request, putData, callback);
         }
 
         /**

@@ -5,7 +5,7 @@
         "type": "git",
         "url": "https://github.com/terribleplan/Typertext.git"
     },
-    "version": "0.7.2",
+    "version": "0.8.0",
     "devDependencies": {
         "grunt": "~0.4.2",
         "grunt-cli": "~0.1.13",
