@@ -81,19 +81,19 @@ module Typertext.Http {
             for (temp in data) {
                 var cur = data[temp];
 
+                if (typeof cur !== "object" && typeof cur !== "function") {
+                    rs += encodeURIComponent(temp) + "=" + encodeURIComponent(cur) + "&";
+                    continue;
+                }
+
                 if (cur instanceof Array) {
                     for (var i = 0; i < cur.length; i++) {
-                        if (typeof cur[i] !== "string") {
+                        if (typeof cur[i] === "object" && typeof cur[i] !== "function") {
                             continue;
                         }
 
                         rs += encodeURIComponent(temp) + "=" + encodeURIComponent(cur[i]) + "&";
                     }
-                    continue;
-                }
-
-                if (typeof cur === "string") {
-                    rs += encodeURIComponent(temp) + "=" + encodeURIComponent(cur) + "&";
                 }
             }
 

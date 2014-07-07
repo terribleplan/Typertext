@@ -218,6 +218,33 @@ describe("Typertext.Http.HttpUrl", function () {
 
             expect(actualOutput).toEqual(expectedOutput);
         });
+        it("encodes a key with a number value", function () {
+            var input = {
+                    "foo": 6
+                },
+                expectedOutput = "foo=6",
+                actualOutput = Typertext.Http.HttpUrl.UrlEncodeObject(input);
+
+            expect(actualOutput).toEqual(expectedOutput);
+        });
+        it("does not encode a key with an object value", function () {
+            var input = {
+                    "foo": {}
+                },
+                expectedOutput = "",
+                actualOutput = Typertext.Http.HttpUrl.UrlEncodeObject(input);
+
+            expect(actualOutput).toEqual(expectedOutput);
+        });
+        it("does not encode a key with a function value", function () {
+            var input = {
+                    "foo": function(){}
+                },
+                expectedOutput = "",
+                actualOutput = Typertext.Http.HttpUrl.UrlEncodeObject(input);
+
+            expect(actualOutput).toEqual(expectedOutput);
+        });
     });
 
     describe("UrlDecodeObject", function () {
