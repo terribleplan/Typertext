@@ -209,6 +209,15 @@ describe("Typertext.Http.HttpUrl", function () {
 
             expect(actualOutput).toEqual(expectedOutput);
         });
+        it("encodes a key with an array value", function () {
+            var input = {
+                    "foo": ["bar", "fizz", "buzz"]
+                },
+                expectedOutput = "foo=bar&foo=fizz&foo=buzz",
+                actualOutput = Typertext.Http.HttpUrl.UrlEncodeObject(input);
+
+            expect(actualOutput).toEqual(expectedOutput);
+        });
     });
 
     describe("UrlDecodeObject", function () {

@@ -1,9 +1,8 @@
+/// <reference path="HttpResponseHandler.ts" />
+/// <reference path="../GenericRequest.ts" />
 /// <reference path="../Transport/TransportConstructor.ts" />
 /// <reference path="../Transport/GenericTransport.ts" />
 /// <reference path="../Transport/TransportChooser.ts" />
-
-//TODO add support for IE8-9 CORS via XDomain
-//TODO better error handling, ala exceptions
 
 /**
  * @namespace   Typertext

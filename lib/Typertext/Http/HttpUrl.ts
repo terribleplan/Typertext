@@ -79,7 +79,22 @@ module Typertext.Http {
             var temp:string;
 
             for (temp in data) {
-                rs += encodeURIComponent(temp) + "=" + encodeURIComponent(data[temp]) + "&";
+                var cur = data[temp];
+
+                if (cur instanceof Array) {
+                    for (var i = 0; i < cur.length; i++) {
+                        if (typeof cur[i] !== "string") {
+                            continue;
+                        }
+
+                        rs += encodeURIComponent(temp) + "=" + encodeURIComponent(cur[i]) + "&";
+                    }
+                    continue;
+                }
+
+                if (typeof cur === "string") {
+                    rs += encodeURIComponent(temp) + "=" + encodeURIComponent(cur) + "&";
+                }
             }
 
             return rs.slice(0, -1);

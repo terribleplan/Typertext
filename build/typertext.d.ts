@@ -92,7 +92,11 @@ declare module Typertext.Http {
 }
 declare module Typertext.Http {
     interface HttpQueryString {
-        [index: string]: string;
+        [index: string]: any;
+    }
+}
+declare module Typertext.Http {
+    interface HttpResponseHandler extends GenericResponseHandler<HttpResponse> {
     }
 }
 declare module Typertext.Transport {
@@ -119,10 +123,6 @@ declare module Typertext.Http {
 declare module Typertext.Http {
     class HttpResponse extends GenericResponse<string> {
         constructor(status: HttpResponseStatus, responseHeaderGetter?: (input: string) => string, httpResponseCode?: number, responseBody?: string);
-    }
-}
-declare module Typertext.Http {
-    interface HttpResponseHandler extends GenericResponseHandler<HttpResponse> {
     }
 }
 declare module Typertext.Http {
