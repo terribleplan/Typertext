@@ -1,9 +1,11 @@
 language: node_js
 node_js:
-  - 0.10
-  - 0.11
+- 0.1
+- 0.11
 env:
-  matrix:
+  matrix: 
   global:
-    secure: "cPBnfWyT5IYtTEzk8/+CJnOZ7+PukuezjKTtFxkgomliSUTo23BCUzXAxTsQeq13ZmxITouoFzwxt5Wfb3qBanodwNpX4LCQ1fwvR/WXk/fxfCStukr0qR4Yc3c0j9Ocj74zaPn0j7JJXY7mdFdiUwrKy+eyRW8hdnY9N9KFEZA="
-    secure: "TpqYB8dBCofefMxh5EWczpgJ8bVnz1jbSGeYNFKX0vLkhQo/YelU9TTNJ00t8zmINNsfFqCKye/wRKDoeQ4rY1whdIx7U5MRol1tzvoHk6D64UK0GFqBeMKNEV+nRwUS1JSH5hOYqOrwvUmY717kXyu+tG26VqSszmoLaC6h6GI="
+    secure: TpqYB8dBCofefMxh5EWczpgJ8bVnz1jbSGeYNFKX0vLkhQo/YelU9TTNJ00t8zmINNsfFqCKye/wRKDoeQ4rY1whdIx7U5MRol1tzvoHk6D64UK0GFqBeMKNEV+nRwUS1JSH5hOYqOrwvUmY717kXyu+tG26VqSszmoLaC6h6GI=
+notifications:
+  slack:
+    secure: gHexBSf8+fQf/msC2Buc3OqkgQghem9Ly/a02NU3A2gqEx2f7tqVLEuevE+q8kY9mSrVVePDykz6eKJ3w9TY2R3+WO2eYn/4sq/RI6TQb6Y0opmR9e7WBh8dLlC9Aq3y4zVv1YYyZKtWfrdHGbBtIizQZH1O4+E/LXizcPZakxg=
